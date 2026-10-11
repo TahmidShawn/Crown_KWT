@@ -50,7 +50,10 @@ app.use(
 
 app.use(
     cors({
-        origin: process.env.CORS_ORIGIN,
+        origin: [
+            "http://localhost:5173",
+            "https://fanciful-semifreddo-b91c8c.netlify.app",
+        ],
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
