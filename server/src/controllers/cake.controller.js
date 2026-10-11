@@ -187,11 +187,22 @@ export const createCake = asyncHandler(async (req, res) => {
 });
 
 export const getCakes = asyncHandler(async (req, res) => {
-    const { category, price, size, sort = "featured", limit } = req.query;
+    const { category, price, size, sort = "featured", limit, search } =
+        req.query;
 
     const filter = {
         isActive: true,
     };
+
+    // Text search across English and Arabic names
+    if (search && String(search).trim()) {
+        const term = String(search).trim();
+
+        filter.$or = [
+            { "name.en": { $regex: term, $options: "i" } },
+            { "name.ar": { $regex: term, $options: "i" } },
+        ];
+    }
 
     // Category filter
     if (category) {
