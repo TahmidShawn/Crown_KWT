@@ -14,8 +14,10 @@ import { GoogleLogin } from "@react-oauth/google";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import GoogleIcon from "@/components/ui/google-icon";
 import { Input } from "@/components/ui/input";
 import useAuth from "@/hooks/useAuth";
+import useElementWidth from "@/hooks/useElementWidth";
 import usePost from "@/hooks/usePost";
 
 const loginSchema = z.object({
@@ -26,6 +28,8 @@ const loginSchema = z.object({
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+
+    const { ref: googleBtnRef, width: googleBtnWidth } = useElementWidth();
 
     const navigate = useNavigate();
     const { refreshUser } = useAuth();
@@ -137,18 +141,42 @@ const Login = () => {
 
                         {/* Google Login */}
                         <div className="space-y-4">
-                            <div className="w-full">
-                                <GoogleLogin
-                                    onSuccess={handleGoogleSuccess}
-                                    onError={handleGoogleError}
-                                    useOneTap={false}
-                                    theme="outline"
-                                    size="large"
-                                    text="continue_with"
-                                    shape="rectangular"
-                                    width="full"
+                            {/*
+                             * Custom "Continue with Google" button that matches the
+                             * form inputs exactly. The real <GoogleLogin> is layered
+                             * invisibly on top so it still handles the click and runs
+                             * Google's ID-token flow (backend stays unchanged).
+                             */}
+                            <div
+                                className="relative h-11 w-full"
+                                ref={googleBtnRef}
+                            >
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    aria-label="Continue with Google"
                                     disabled={isPending}
-                                />
+                                    className="pointer-events-none absolute inset-0 h-11 w-full gap-2.5 rounded-lg text-sm font-medium"
+                                >
+                                    <GoogleIcon className="size-[18px]" />
+                                    Continue with Google
+                                </Button>
+
+                                {googleBtnWidth > 0 && (
+                                    <div className="google-login-overlay absolute inset-0">
+                                        <GoogleLogin
+                                            onSuccess={handleGoogleSuccess}
+                                            onError={handleGoogleError}
+                                            useOneTap={false}
+                                            theme="outline"
+                                            size="large"
+                                            text="continue_with"
+                                            shape="rectangular"
+                                            width={googleBtnWidth}
+                                            disabled={isPending}
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             {googleError && (

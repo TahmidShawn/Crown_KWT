@@ -194,4 +194,22 @@
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+
+    /*
+     * Google Identity Services renders its sign-in button inside a cross-origin
+     * iframe whose internal width we cannot control from outside (and Google
+     * ignores the width hint on personalized/authorized origins). Instead of
+     * fighting Google's sizing, the Login/Register pages hide the real button
+     * behind a fully custom, theme-matched button. The real button sits on top,
+     * invisible (opacity: 0), so it still receives the click and runs Google's
+     * ID-token flow. The iframe is forced full-width so the whole button area
+     * stays clickable.
+     */
+    .google-login-overlay {
+        opacity: 0;
+    }
+
+    .google-login-overlay iframe {
+        width: 100% !important;
+    }
 }

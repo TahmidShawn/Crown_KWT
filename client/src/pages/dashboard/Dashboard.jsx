@@ -2,6 +2,7 @@ import {
     ArrowUpRight,
     CheckCircle2,
     Clock3,
+    Loader2,
     Package,
     ShoppingBag,
     Truck,
@@ -17,50 +18,78 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
-const statistics = [
-    {
-        title: "Total orders",
-        value: "12",
-        description: "All time orders",
-        icon: ShoppingBag,
-    },
-    {
-        title: "Processing",
-        value: "2",
-        description: "Currently preparing",
-        icon: Clock3,
-    },
-    {
-        title: "On the way",
-        value: "1",
-        description: "Out for delivery",
-        icon: Truck,
-    },
-    {
-        title: "Delivered",
-        value: "9",
-        description: "Successfully delivered",
-        icon: CheckCircle2,
-    },
-];
-
-const orders = [
-    {
-        id: "CK-1024",
-        date: "September 26, 2026",
-        status: "Delivered",
-        total: "18.500",
-    },
-    {
-        id: "CK-1021",
-        date: "September 24, 2026",
-        status: "On the way",
-        total: "12.000",
-    },
-];
+import useAuth from "@/hooks/useAuth";
+import useGet from "@/hooks/useGet";
+import {
+    formatDate,
+    getStatusClass,
+    getStatusLabel,
+} from "@/utils/orderStatus";
 
 const Dashboard = () => {
+    const { isLoading: authLoading, isAuthenticated } = useAuth();
+
+    // The dashboard is built entirely from the user's real orders.
+    const {
+        data: ordersResponse,
+        isLoading: ordersLoading,
+        isError,
+    } = useGet({
+        url: "/orders",
+        queryKey: ["orders"],
+        retry: false,
+        enabled: !authLoading && isAuthenticated,
+    });
+
+    const orders = ordersResponse?.data ?? [];
+
+    // Real statistics derived from the fetched orders.
+    const processing = orders.filter(
+        (order) =>
+            order.orderStatus === "pending" ||
+            order.orderStatus === "confirmed",
+    ).length;
+
+    const onTheWay = orders.filter(
+        (order) => order.orderStatus === "out_for_delivery",
+    ).length;
+
+    const delivered = orders.filter(
+        (order) => order.orderStatus === "delivered",
+    ).length;
+
+    const statistics = [
+        {
+            title: "Total orders",
+            value: orders.length,
+            description: "All time orders",
+            icon: ShoppingBag,
+        },
+        {
+            title: "Processing",
+            value: processing,
+            description: "Currently preparing",
+            icon: Clock3,
+        },
+        {
+            title: "On the way",
+            value: onTheWay,
+            description: "Out for delivery",
+            icon: Truck,
+        },
+        {
+            title: "Delivered",
+            value: delivered,
+            description: "Successfully delivered",
+            icon: CheckCircle2,
+        },
+    ];
+
+    // Latest orders first (the endpoint already sorts by createdAt desc).
+    const recentOrders = orders.slice(0, 4);
+
+    const isLoading = authLoading || ordersLoading;
+
     return (
         <div className="p-5 sm:p-7 lg:p-9">
             {/* Header */}
@@ -81,8 +110,8 @@ const Dashboard = () => {
 
                 <Button
                     asChild
-                    variant="outline"
-                    className="w-fit rounded-xl"
+                    variant="outline-asymmetric"
+                    className="w-fit"
                 >
                     <Link to="/products">
                         Continue shopping
@@ -91,6 +120,44 @@ const Dashboard = () => {
                 </Button>
             </div>
 
+            {/* Loading */}
+            {isLoading && (
+                <div className="flex min-h-60 items-center justify-center">
+                    <Loader2 className="size-7 animate-spin text-primary" />
+                </div>
+            )}
+
+            {/* Error */}
+            {!isLoading && isError && (
+                <div className="rounded-2xl border bg-background px-6 py-14 text-center">
+                    <h3 className="text-base font-bold">
+                        Unable to load your dashboard
+                    </h3>
+
+                    <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+                        We couldn&apos;t fetch your orders. Please try again
+                        later.
+                    </p>
+                </div>
+            )}
+
+            {/* Guests see a login prompt instead of empty stats */}
+            {!isLoading && !isError && !isAuthenticated && (
+                <div className="rounded-2xl border bg-background px-6 py-14 text-center">
+                    <h3 className="text-base font-bold">Please log in</h3>
+
+                    <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+                        Log in to see your orders, stats and account activity.
+                    </p>
+
+                    <Button asChild variant="asymmetric" className="mt-5">
+                        <Link to="/auth/login">Log in</Link>
+                    </Button>
+                </div>
+            )}
+
+            {!isLoading && !isError && isAuthenticated && (
+                <>
             {/* Statistics */}
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {statistics.map((item) => {
@@ -154,8 +221,32 @@ const Dashboard = () => {
                 </CardHeader>
 
                 <CardContent className="px-5 py-1 sm:px-6">
-                    {orders.map((order, index) => (
-                        <div key={order.id}>
+                    {recentOrders.length === 0 && (
+                        <div className="flex flex-col items-center py-10 text-center">
+                            <div className="flex size-12 items-center justify-center rounded-xl bg-muted">
+                                <Package className="size-6 text-muted-foreground" />
+                            </div>
+
+                            <p className="mt-4 font-semibold">
+                                No orders yet
+                            </p>
+
+                            <p className="mt-1 max-w-xs text-sm text-muted-foreground">
+                                When you place an order, it will show up here.
+                            </p>
+
+                            <Button
+                                asChild
+                                variant="outline-asymmetric"
+                                className="mt-4"
+                            >
+                                <Link to="/products">Start shopping</Link>
+                            </Button>
+                        </div>
+                    )}
+
+                    {recentOrders.map((order, index) => (
+                        <div key={order._id}>
                             <div className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="flex items-start gap-4">
                                     <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted">
@@ -164,11 +255,11 @@ const Dashboard = () => {
 
                                     <div>
                                         <p className="font-semibold">
-                                            #{order.id}
+                                            #{order.orderNumber}
                                         </p>
 
                                         <p className="mt-1 text-sm text-muted-foreground">
-                                            {order.date}
+                                            {formatDate(order.createdAt)}
                                         </p>
                                     </div>
                                 </div>
@@ -177,28 +268,28 @@ const Dashboard = () => {
                                     <div>
                                         <Badge
                                             variant="secondary"
-                                            className={
-                                                order.status === "Delivered"
-                                                    ? "bg-primary/10 text-primary"
-                                                    : "bg-amber-500/10 text-amber-600"
-                                            }
+                                            className={getStatusClass(
+                                                order.orderStatus,
+                                            )}
                                         >
-                                            {order.status}
+                                            {getStatusLabel(order.orderStatus)}
                                         </Badge>
 
                                         <p className="mt-2 text-sm font-semibold">
-                                            KWD {order.total}
+                                            KWD{" "}
+                                            {Number(order.totalPrice).toFixed(
+                                                3,
+                                            )}
                                         </p>
                                     </div>
 
                                     <Button
                                         asChild
-                                        variant="outline"
+                                        variant="outline-asymmetric"
                                         size="icon"
-                                        className="rounded-full"
                                     >
                                         <Link
-                                            to={`/dashboard/orders/${order.id}`}
+                                            to={`/dashboard/orders/${order._id}`}
                                         >
                                             <ArrowUpRight className="size-4" />
                                         </Link>
@@ -206,11 +297,13 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            {index < orders.length - 1 && <Separator />}
+                            {index < recentOrders.length - 1 && <Separator />}
                         </div>
                     ))}
                 </CardContent>
             </Card>
+                </>
+            )}
         </div>
     );
 };

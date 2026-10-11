@@ -1,3 +1,4 @@
+import { isValidElement } from "react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva } from "class-variance-authority";
 import { cn } from "cn";
@@ -63,13 +64,26 @@ function Button({
     className,
     variant = "default",
     size = "default",
+    asChild = false,
+    children,
     ...props
 }) {
+    /*
+     * Base UI composes elements through its `render` prop (there is no
+     * `asChild`). When `asChild` is set, the single child (e.g. a react-router
+     * <Link>) replaces the <button> entirely, so we never end up with an
+     * <a> nested inside a <button>. Class names from both sides are merged
+     * by Base UI, so variant styles always apply.
+     */
+    const composed = asChild && isValidElement(children);
+
     return (
         <ButtonPrimitive
             data-slot="button"
+            render={composed ? children : undefined}
             className={cn(buttonVariants({ variant, size, className }))}
             {...props}
+            {...(composed ? {} : { children })}
         />
     );
 }
