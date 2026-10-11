@@ -19,6 +19,7 @@ import cartRouter from "./routes/cart.route.js";
 import orderRouter from "./routes/order.route.js";
 import paymentRouter from "./routes/payment.route.js";
 import addOnRouter from "./routes/addOn.route.js";
+import statsRouter from "./routes/stats.route.js";
 
 // env check
 
@@ -83,6 +84,7 @@ app.use("/api/v1", cartRouter);
 app.use("/api/v1", orderRouter);
 app.use("/api/v1", paymentRouter);
 app.use("/api/v1", addOnRouter);
+app.use("/api/v1", statsRouter);
 
 app.use((req, res, next) => {
     next(new ErrorHandler(`Cannot ${req.method} ${req.originalUrl}`, 404));
