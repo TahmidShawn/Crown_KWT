@@ -624,9 +624,11 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
                 );
             }
 
+            // Admins can move an order forward to any later status
+            // (e.g. straight to "delivered"), but never backwards.
             const allowedTransitions = {
-                pending: ["confirmed"],
-                confirmed: ["out_for_delivery"],
+                pending: ["confirmed", "out_for_delivery", "delivered"],
+                confirmed: ["out_for_delivery", "delivered"],
                 out_for_delivery: ["delivered"],
             };
 
@@ -647,6 +649,10 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
 
             order.orderStatus = status;
 
+            if (status === "delivered") {
+                order.deliveredAt = new Date();
+            }
+
             await order.save({ session });
 
             updatedOrder = order;
@@ -660,4 +666,34 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
     } finally {
         await session.endSession();
     }
+});
+
+export const updateOrderNotes = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const adminNotes =
+        typeof req.body.adminNotes === "string" ? req.body.adminNotes.trim() : "";
+
+    if (adminNotes.length > 1000) {
+        throw new ErrorHandler(
+            "Admin notes cannot exceed 1000 characters",
+            400,
+        );
+    }
+
+    const order = await Order.findById(id);
+
+    if (!order) {
+        throw new ErrorHandler("Order not found", 404);
+    }
+
+    order.adminNotes = adminNotes;
+
+    await order.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Order notes updated successfully",
+        data: order,
+    });
 });

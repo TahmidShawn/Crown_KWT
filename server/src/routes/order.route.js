@@ -7,6 +7,7 @@ import {
     getMyOrders,
     getOrder,
     trackOrder,
+    updateOrderNotes,
     updateOrderStatus,
 } from "../controllers/order.controller.js";
 import {
@@ -44,5 +45,9 @@ router
 router
     .route("/admin/orders/:id/status")
     .patch(isAuthenticatedUser, authorizeRoles("admin"), updateOrderStatus);
+
+router
+    .route("/admin/orders/:id/notes")
+    .patch(isAuthenticatedUser, authorizeRoles("admin"), updateOrderNotes);
 
 export default router;
