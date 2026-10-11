@@ -21,7 +21,12 @@ const router = Router();
 
 router
     .route("/order")
-    .post(isAuthenticatedUser, validateRequest(createOrderSchema), createOrder)
+    .post(
+        isAuthenticatedUser,
+        authorizeRoles("user"),
+        validateRequest(createOrderSchema),
+        createOrder,
+    )
     .get(isAuthenticatedUser, authorizeRoles("admin"), getAllOrders);
 
 router.route("/orders").get(isAuthenticatedUser, getMyOrders);
