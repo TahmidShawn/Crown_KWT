@@ -226,26 +226,58 @@ export const loginUser = asyncHandler(async (req, res) => {
 });
 
 export const googleLogin = asyncHandler(async (req, res) => {
-    const { credential } = req.body;
+    /*
+     * Supports two Google sign-in flows:
+     *  1. ID token     (credential)  — from <GoogleLogin> / One Tap.
+     *  2. Access token (accessToken) — from a custom button via useGoogleLogin.
+     * Both resolve to the same verified profile below.
+     */
+    const { credential, accessToken } = req.body;
 
-    if (!credential) {
+    if (!credential && !accessToken) {
         throw new ErrorHandler("Google credential is required", 400);
     }
 
-    let ticket;
+    let profile;
 
-    try {
-        ticket = await googleClient.verifyIdToken({
-            idToken: credential,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-    } catch (error) {
-        throw new ErrorHandler("Invalid or expired Google credential", 401);
+    if (credential) {
+        /* Flow 1 — verify the Google ID token. */
+        let ticket;
+
+        try {
+            ticket = await googleClient.verifyIdToken({
+                idToken: credential,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+        } catch (error) {
+            throw new ErrorHandler(
+                "Invalid or expired Google credential",
+                401,
+            );
+        }
+
+        profile = ticket.getPayload();
+    } else {
+        /* Flow 2 — exchange the access token for the user's profile. */
+        try {
+            const response = await fetch(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                },
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch Google user info");
+            }
+
+            profile = await response.json();
+        } catch (error) {
+            throw new ErrorHandler("Invalid or expired Google token", 401);
+        }
     }
 
-    const payload = ticket.getPayload();
-
-    if (!payload) {
+    if (!profile) {
         throw new ErrorHandler("Invalid Google account information", 401);
     }
 
@@ -255,7 +287,7 @@ export const googleLogin = asyncHandler(async (req, res) => {
         email_verified: emailVerified,
         name,
         picture,
-    } = payload;
+    } = profile;
 
     if (!email || !emailVerified || !googleId) {
         throw new ErrorHandler("Unable to verify your Google account", 401);
