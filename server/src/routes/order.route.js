@@ -34,11 +34,15 @@ router
     .patch(isAuthenticatedUser, cancelMyOrder);
 
 router
-    .route("/admin/:id")
+    .route("/admin/orders")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getAllOrders);
+
+router
+    .route("/admin/orders/:id")
     .get(isAuthenticatedUser, authorizeRoles("admin"), getOrder);
 
 router
-    .route("/admin/:id/status")
+    .route("/admin/orders/:id/status")
     .patch(isAuthenticatedUser, authorizeRoles("admin"), updateOrderStatus);
 
 export default router;
