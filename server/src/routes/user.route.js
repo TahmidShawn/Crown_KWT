@@ -1,6 +1,13 @@
 import { Router } from "express";
-import { getMe, updatePassword } from "../controllers/user.controller.js";
-import { isAuthenticatedUser } from "../middlewares/auth.middleware.js";
+import {
+    getAllCustomers,
+    getMe,
+    updatePassword,
+} from "../controllers/user.controller.js";
+import {
+    isAuthenticatedUser,
+    authorizeRoles,
+} from "../middlewares/auth.middleware.js";
 import { validateRequest } from "../middlewares/validation.middleware.js";
 import { updatePasswordSchema } from "../validations/user.validation.js";
 import { authLimiter } from "../middlewares/rateLimiter.middleware.js";
@@ -19,5 +26,10 @@ router
         validateRequest(updatePasswordSchema),
         updatePassword,
     );
+
+// Admin: list all customers
+router
+    .route("/admin/customers")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getAllCustomers);
 
 export default router;
