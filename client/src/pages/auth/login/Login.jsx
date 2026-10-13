@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useGoogleLogin } from "@react-oauth/google";
 import { z } from "zod";
 
@@ -18,6 +18,7 @@ import GoogleIcon from "@/components/ui/google-icon";
 import { Input } from "@/components/ui/input";
 import useAuth from "@/hooks/useAuth";
 import usePost from "@/hooks/usePost";
+import getRoleHome from "@/utils/roleHome";
 
 const loginSchema = z.object({
     email: z.string().trim().email("Please enter a valid email address."),
@@ -29,7 +30,21 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
     const { refreshUser } = useAuth();
+
+    // Where RequireAuth asked us to send the user after a successful login
+    // (deep-linked protected page). Falls back to the role's home.
+    const returnTo = location.state?.from?.pathname;
+
+    const redirectAfterLogin = (role) => {
+        if (returnTo && !returnTo.startsWith("/auth")) {
+            navigate(returnTo, { replace: true });
+            return;
+        }
+
+        navigate(getRoleHome(role), { replace: true });
+    };
 
     const {
         register,
@@ -65,9 +80,9 @@ const Login = () => {
                 { accessToken: tokenResponse.access_token },
                 {
                     onSuccess: async () => {
-                        await refreshUser();
+                        const currentUser = await refreshUser();
 
-                        navigate("/");
+                        redirectAfterLogin(currentUser?.role);
                     },
                 },
             );
@@ -82,9 +97,9 @@ const Login = () => {
     const handleLogin = (formData) => {
         loginUser(formData, {
             onSuccess: async () => {
-                await refreshUser();
+                const currentUser = await refreshUser();
 
-                navigate("/");
+                redirectAfterLogin(currentUser?.role);
             },
         });
     };

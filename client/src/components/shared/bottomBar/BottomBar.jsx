@@ -24,7 +24,10 @@ const BottomBar = () => {
     const { language } = useLanguage();
     const isArabic = language === "ar";
 
-    const { isAuthenticated, isLoading, clearUser } = useAuth();
+    const { isAuthenticated, isLoading, user, clearUser } = useAuth();
+
+    const isAdmin = user?.role === "admin";
+    const isCustomer = user?.role === "user";
     const queryClient = useQueryClient();
 
     const { mutate: logoutUser, isPending: isLoggingOut } = usePost({
@@ -114,8 +117,12 @@ const BottomBar = () => {
                     </PopoverContent>
                 </Popover>
 
-                {/* Orders */}
-                <Link to="/order-tracking" className={itemClass}>
+                {/* Orders — customers go straight to their own orders,
+                    everyone else uses public tracking by order number */}
+                <Link
+                    to={isCustomer ? "/dashboard/orders" : "/order-tracking"}
+                    className={itemClass}
+                >
                     <Package className="size-5" />
 
                     <span className="text-[10px] font-medium">
@@ -167,14 +174,26 @@ const BottomBar = () => {
                             </div>
 
                             <div className="mt-2 space-y-1">
-                                <Link to="/cart" className={linkClass}>
-                                    <ShoppingBag className="size-4" />
-                                    {isArabic ? "السلة" : "Cart"}
-                                </Link>
+                                {/* Cart — customers only */}
+                                {isCustomer && (
+                                    <Link to="/cart" className={linkClass}>
+                                        <ShoppingBag className="size-4" />
+                                        {isArabic ? "السلة" : "Cart"}
+                                    </Link>
+                                )}
 
-                                <Link to="/dashboard" className={linkClass}>
+                                <Link
+                                    to={isAdmin ? "/admin" : "/dashboard"}
+                                    className={linkClass}
+                                >
                                     <LayoutGrid className="size-4" />
-                                    {isArabic ? "لوحة التحكم" : "Dashboard"}
+                                    {isAdmin
+                                        ? isArabic
+                                            ? "لوحة الإدارة"
+                                            : "Admin Panel"
+                                        : isArabic
+                                          ? "لوحة التحكم"
+                                          : "Dashboard"}
                                 </Link>
 
                                 <Link to="/profile" className={linkClass}>

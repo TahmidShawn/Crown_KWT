@@ -16,6 +16,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import OrderTimeline from "@/components/shared/orderTimeline/OrderTimeline";
 import { toast } from "sonner";
 import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
@@ -193,68 +194,10 @@ const OrderDetails = () => {
 
                     <CardContent className="px-5 pb-6 sm:px-6">
                         <div className="relative">
-                            {trackingSteps.map((step, index) => {
-                                const Icon = step.icon;
-                                const isLast =
-                                    index === trackingSteps.length - 1;
-
-                                return (
-                                    <div
-                                        key={step.key}
-                                        className="relative flex gap-4"
-                                    >
-                                        {!isLast && (
-                                            <div
-                                                className={`absolute left-5 top-10 h-[calc(100%-8px)] w-px ${
-                                                    step.completed
-                                                        ? "bg-primary"
-                                                        : "bg-border"
-                                                }`}
-                                            />
-                                        )}
-
-                                        <div
-                                            className={`relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full border ${
-                                                step.completed
-                                                    ? "border-primary bg-primary text-primary-foreground"
-                                                    : step.current
-                                                      ? "border-primary bg-primary/10 text-primary"
-                                                      : "border-border bg-muted text-muted-foreground"
-                                            }`}
-                                        >
-                                            <Icon className="size-4" />
-                                        </div>
-
-                                        <div
-                                            className={`min-w-0 flex-1 ${
-                                                isLast ? "pb-0" : "pb-8"
-                                            }`}
-                                        >
-                                            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                                                <h3
-                                                    className={`text-sm font-semibold ${
-                                                        step.current
-                                                            ? "text-primary"
-                                                            : ""
-                                                    }`}
-                                                >
-                                                    {step.title}
-                                                </h3>
-
-                                                {step.date && (
-                                                    <span className="text-xs text-muted-foreground">
-                                                        {step.date}
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            <p className="mt-1 text-sm leading-5 text-muted-foreground">
-                                                {step.description}
-                                            </p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            <OrderTimeline
+                                steps={trackingSteps}
+                                language={language}
+                            />
                         </div>
 
                         <div className="mt-7 flex items-start gap-3 rounded-xl bg-muted/60 p-4">

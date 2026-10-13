@@ -30,15 +30,16 @@ export const updatePassword = asyncHandler(async (req, res) => {
 });
 
 /*
- * Admin: list every customer (role "user") together with their order rollups,
- * so the admin panel can show lifetime value without a request per customer.
+ * Admin: list every registered account together with their order rollups, so
+ * the panel can show lifetime value without a request per customer.
+ *
+ * All roles are returned and flagged with `isStaff`, rather than filtering to
+ * role "user" here: staff often place test orders, and silently dropping those
+ * accounts made their real orders (and spend) disappear from the page. The UI
+ * decides what to emphasise; the API stays truthful about who ordered what.
  */
 export const getAllCustomers = asyncHandler(async (req, res) => {
     const customers = await User.aggregate([
-        // Customers are real shoppers only — staff/admin accounts never appear,
-        // mirroring the "Customers" stat on the admin dashboard.
-        { $match: { role: "user" } },
-
         {
             $lookup: {
                 from: "orders",
@@ -75,6 +76,7 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
                         },
                     },
                 },
+                isStaff: { $ne: ["$role", "user"] },
             },
         },
 
@@ -90,7 +92,8 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
             },
         },
 
-        { $sort: { createdAt: -1 } },
+        // Most active first, then newest accounts.
+        { $sort: { totalOrders: -1, createdAt: -1 } },
     ]);
 
     res.status(200).json({
@@ -99,4 +102,5 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
         data: customers,
     });
 });
+
 

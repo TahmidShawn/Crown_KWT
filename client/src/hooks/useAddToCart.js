@@ -6,20 +6,14 @@ import api from "@/api/axios";
 import useAuth from "@/hooks/useAuth";
 import { useLanguage } from "@/context/LanguageContext";
 
-/*
- * Shared "add to cart" action used by product cards and the product page.
- *
- * - Posts the cake to `/cart/items` with a quantity of 1 by default.
- * - Shows a localized success / error toast.
- * - Invalidates the `["cart"]` query so the navbar badge stays in sync.
- * - Sends guests to the login page instead of firing a request that would 401.
- */
 const useAddToCart = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const { language } = useLanguage();
     const isArabic = language === "ar";
+
+    const canAddToCart = isAuthenticated && user?.role === "user";
 
     const mutation = useMutation({
         mutationFn: async ({ cakeId, quantity }) => {
@@ -34,9 +28,7 @@ const useAddToCart = () => {
             queryClient.invalidateQueries({ queryKey: ["cart"] });
 
             toast.success(
-                isArabic
-                    ? "تمت إضافة الكعكة إلى السلة"
-                    : "Cake added to cart",
+                isArabic ? "تمت إضافة الكعكة إلى السلة" : "Cake added to cart",
             );
         },
         onError: (error) => {
@@ -58,6 +50,16 @@ const useAddToCart = () => {
             );
 
             navigate("/auth/login");
+            return;
+        }
+
+        if (!canAddToCart) {
+            toast.error(
+                isArabic
+                    ? "التسوق متاح لحسابات العملاء فقط"
+                    : "Shopping is available for customer accounts only",
+            );
+
             return;
         }
 

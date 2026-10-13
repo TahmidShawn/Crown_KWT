@@ -27,8 +27,13 @@ const navigationGroups = [
         items: [
             { title: "All Orders", path: "/admin/orders" },
             { title: "Pending", path: "/admin/orders/pending" },
-            { title: "Processing", path: "/admin/orders/processing" },
-            { title: "Completed", path: "/admin/orders/completed" },
+            { title: "Confirmed", path: "/admin/orders/confirmed" },
+            {
+                title: "Out for Delivery",
+                path: "/admin/orders/out-for-delivery",
+            },
+            { title: "Delivered", path: "/admin/orders/delivered" },
+            { title: "Cancelled", path: "/admin/orders/cancelled" },
         ],
     },
     {
@@ -62,7 +67,7 @@ const simpleNavigation = [
     },
 ];
 
-function SidebarContent({ collapsed = false, onNavigate }) {
+function SidebarContent({ onNavigate }) {
     const location = useLocation();
 
     const isGroupActive = (items) =>
@@ -76,11 +81,7 @@ function SidebarContent({ collapsed = false, onNavigate }) {
     return (
         <div className="flex h-full flex-col">
             {/* Logo */}
-            <div
-                className={`flex h-20 items-center border-b px-5 ${
-                    collapsed ? "justify-center px-2" : "justify-start"
-                }`}
-            >
+            <div className="flex h-20 items-center justify-start border-b px-5">
                 <NavLink
                     to="/"
                     onClick={onNavigate}
@@ -90,17 +91,15 @@ function SidebarContent({ collapsed = false, onNavigate }) {
                         <Cake className="size-5" />
                     </div>
 
-                    {!collapsed && (
-                        <div className="flex flex-col">
-                            <span className="font-semibold leading-none tracking-tight">
-                                Crown Kwt
-                            </span>
+                    <div className="flex flex-col">
+                        <span className="font-semibold leading-none tracking-tight">
+                            Crown Kwt
+                        </span>
 
-                            <span className="mt-1 text-xs text-muted-foreground">
-                                Admin Panel
-                            </span>
-                        </div>
-                    )}
+                        <span className="mt-1 text-xs text-muted-foreground">
+                            Admin Panel
+                        </span>
+                    </div>
                 </NavLink>
             </div>
 
@@ -113,9 +112,7 @@ function SidebarContent({ collapsed = false, onNavigate }) {
                         onClick={onNavigate}
                         end
                         className={({ isActive }) =>
-                            `group flex h-11 items-center rounded-xl transition-colors ${
-                                collapsed ? "justify-center px-0" : "gap-3 px-3"
-                            } ${
+                            `group flex h-11 items-center gap-3 rounded-xl px-3 transition-colors ${
                                 isActive
                                     ? "bg-primary text-primary-foreground"
                                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -124,11 +121,7 @@ function SidebarContent({ collapsed = false, onNavigate }) {
                     >
                         <LayoutDashboard className="size-5 shrink-0" />
 
-                        {!collapsed && (
-                            <span className="text-sm font-medium">
-                                Dashboard
-                            </span>
-                        )}
+                        <span className="text-sm font-medium">Dashboard</span>
                     </NavLink>
 
                     {/* Dropdown Groups */}
@@ -136,47 +129,6 @@ function SidebarContent({ collapsed = false, onNavigate }) {
                         const Icon = group.icon;
                         const active = isGroupActive(group.items);
 
-                        {
-                            /* Collapsed Sidebar */
-                        }
-                        if (collapsed) {
-                            return (
-                                <div
-                                    key={group.title}
-                                    className="group relative flex h-11 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground"
-                                >
-                                    <Icon className="size-5" />
-
-                                    <div className="pointer-events-none absolute left-[calc(100%+10px)] z-50 hidden w-44 rounded-xl border bg-background p-2 shadow-lg group-hover:pointer-events-auto group-hover:block">
-                                        <p className="px-2 py-2 text-xs font-semibold text-muted-foreground">
-                                            {group.title}
-                                        </p>
-
-                                        {group.items.map((item) => (
-                                            <NavLink
-                                                key={item.path}
-                                                to={item.path}
-                                                onClick={onNavigate}
-                                                end
-                                                className={({ isActive }) =>
-                                                    `block rounded-lg px-2 py-2 text-sm ${
-                                                        isActive
-                                                            ? "bg-primary text-primary-foreground"
-                                                            : "hover:bg-muted"
-                                                    }`
-                                                }
-                                            >
-                                                {item.title}
-                                            </NavLink>
-                                        ))}
-                                    </div>
-                                </div>
-                            );
-                        }
-
-                        {
-                            /* Expanded Sidebar */
-                        }
                         return (
                             <Collapsible
                                 key={group.title}
@@ -236,11 +188,7 @@ function SidebarContent({ collapsed = false, onNavigate }) {
                                     onClick={onNavigate}
                                     end
                                     className={({ isActive }) =>
-                                        `group flex h-11 items-center rounded-xl transition-colors ${
-                                            collapsed
-                                                ? "justify-center px-0"
-                                                : "gap-3 px-3"
-                                        } ${
+                                        `group flex h-11 items-center gap-3 rounded-xl px-3 transition-colors ${
                                             isActive
                                                 ? "bg-primary text-primary-foreground"
                                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -249,11 +197,9 @@ function SidebarContent({ collapsed = false, onNavigate }) {
                                 >
                                     <Icon className="size-5 shrink-0" />
 
-                                    {!collapsed && (
-                                        <span className="text-sm font-medium">
-                                            {item.title}
-                                        </span>
-                                    )}
+                                    <span className="text-sm font-medium">
+                                        {item.title}
+                                    </span>
                                 </NavLink>
                             );
                         })}
@@ -263,33 +209,26 @@ function SidebarContent({ collapsed = false, onNavigate }) {
 
             {/* Bottom */}
             <div className="border-t p-3">
-                {!collapsed && (
-                    <div className="rounded-xl bg-muted/60 p-3">
-                        <p className="text-xs font-medium">Crown Kwt Admin</p>
+                <div className="rounded-xl bg-muted/60 p-3">
+                    <p className="text-xs font-medium">Crown Kwt Admin</p>
 
-                        <p className="mt-1 text-xs text-muted-foreground">
-                            Manage your store
-                        </p>
-                    </div>
-                )}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        Manage your store
+                    </p>
+                </div>
             </div>
         </div>
     );
 }
 
 export default function AdminDashboardLayout() {
-    const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
         <div className="min-h-screen bg-muted/30">
-            {/* Desktop Sidebar */}
-            <aside
-                className={`fixed inset-y-0 left-0 z-40 hidden border-r bg-background transition-all duration-300 lg:block ${
-                    collapsed ? "w-20" : "w-64"
-                }`}
-            >
-                <SidebarContent collapsed={collapsed} />
+            {/* Desktop Sidebar — always expanded; there is no collapse toggle */}
+            <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:block">
+                <SidebarContent />
             </aside>
 
             {/* Mobile Sidebar */}
@@ -300,11 +239,7 @@ export default function AdminDashboardLayout() {
             </Sheet>
 
             {/* Main */}
-            <div
-                className={`min-h-screen transition-all duration-300 ${
-                    collapsed ? "lg:pl-20" : "lg:pl-64"
-                }`}
-            >
+            <div className="min-h-screen lg:pl-64">
                 {/* Header */}
                 <header className="sticky top-0 z-30 flex h-20 items-center border-b bg-background/95 px-4 backdrop-blur md:px-6">
                     <div className="flex items-center gap-3">
@@ -320,16 +255,6 @@ export default function AdminDashboardLayout() {
                                 </Button>
                             </SheetTrigger>
                         </Sheet>
-
-                        {/* Desktop Collapse */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="hidden lg:flex"
-                            onClick={() => setCollapsed((value) => !value)}
-                        >
-                            <Menu className="size-5" />
-                        </Button>
 
                         <div>
                             <h1 className="text-lg font-semibold">

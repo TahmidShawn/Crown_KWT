@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router";
 import { Clock3, Loader2, Package, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import OrderTimeline from "@/components/shared/orderTimeline/OrderTimeline";
 import useGet from "@/hooks/useGet";
 import {
     buildTrackingSteps,
@@ -14,8 +16,16 @@ import {
 } from "@/utils/orderStatus";
 
 const OrderTracking = () => {
-    const [orderId, setOrderId] = useState("");
-    const [trackedNumber, setTrackedNumber] = useState("");
+    /*
+     * Admins arrive here from the orders table with ?orderNumber=..., so seed
+     * the form and the tracked order from the URL instead of showing an empty
+     * page and making them retype the number.
+     */
+    const [searchParams] = useSearchParams();
+    const initialNumber = searchParams.get("orderNumber")?.trim() ?? "";
+
+    const [orderId, setOrderId] = useState(initialNumber);
+    const [trackedNumber, setTrackedNumber] = useState(initialNumber);
 
     const trimmed = orderId.trim();
 
@@ -154,70 +164,10 @@ const OrderTracking = () => {
                                 </Badge>
                             </div>
 
-                            <div className="mt-6">
-                                {trackingSteps.map((step, index) => {
-                                    const Icon = step.icon;
-                                    const isLast =
-                                        index === trackingSteps.length - 1;
-
-                                    return (
-                                        <div
-                                            key={step.key}
-                                            className="relative flex gap-4"
-                                        >
-                                            {!isLast && (
-                                                <div
-                                                    className={`absolute left-5 top-10 h-[calc(100%-8px)] w-px ${
-                                                        step.completed
-                                                            ? "bg-primary"
-                                                            : "bg-border"
-                                                    }`}
-                                                />
-                                            )}
-
-                                            <div
-                                                className={`relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full border ${
-                                                    step.completed
-                                                        ? "border-primary bg-primary text-primary-foreground"
-                                                        : step.current
-                                                          ? "border-primary bg-primary/10 text-primary"
-                                                          : "border-border bg-muted text-muted-foreground"
-                                                }`}
-                                            >
-                                                <Icon className="size-4" />
-                                            </div>
-
-                                            <div
-                                                className={`min-w-0 flex-1 ${
-                                                    isLast ? "pb-0" : "pb-8"
-                                                }`}
-                                            >
-                                                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                                                    <h3
-                                                        className={`text-sm font-semibold ${
-                                                            step.current
-                                                                ? "text-primary"
-                                                                : ""
-                                                        }`}
-                                                    >
-                                                        {step.title}
-                                                    </h3>
-
-                                                    {step.date && (
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {step.date}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                <p className="mt-1 text-sm leading-5 text-muted-foreground">
-                                                    {step.description}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                            <OrderTimeline
+                                steps={trackingSteps}
+                                language="en"
+                            />
 
                             {order.orderStatus !== "cancelled" &&
                                 order.orderStatus !== "delivered" && (

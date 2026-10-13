@@ -69,7 +69,7 @@ const PaymentSuccess = () => {
                     <Button
                         variant="outline-asymmetric"
                         size="lg"
-                        onClick={() => navigate("/orders")}
+                        onClick={() => navigate("/dashboard/orders")}
                     >
                         View orders
                         <ChevronRight className="size-4" />

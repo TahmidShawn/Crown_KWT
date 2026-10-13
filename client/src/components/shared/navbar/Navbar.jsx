@@ -52,15 +52,19 @@ const Navbar = () => {
     const { language, toggleLanguage, t } = useLanguage();
     const isArabic = language === "ar";
 
-    const { isAuthenticated, isLoading, clearUser } = useAuth();
+    const { isAuthenticated, isLoading, user, clearUser } = useAuth();
+
+    const isAdmin = user?.role === "admin";
+    const isCustomer = user?.role === "user";
 
     const queryClient = useQueryClient();
 
-    // Live cart item count for the navbar badge (only for logged-in users)
+    // Live cart item count for the navbar badge (customers only — admins
+    // don't shop, and the cart API is restricted to the "user" role).
     const { data: cartResponse } = useGet({
         url: "/cart",
         queryKey: ["cart"],
-        enabled: isAuthenticated,
+        enabled: isCustomer,
         retry: false,
     });
 
@@ -235,8 +239,10 @@ const Navbar = () => {
 
                 {/* Actions */}
                 <div className="flex shrink-0 items-center gap-1">
-                    {/* Cart */}
-                    <Link to="/cart" className="relative">
+                    {/* Cart — customers only (admins manage the shop, they don't
+                        shop, and the cart API is user-only) */}
+                    {isCustomer && (
+                        <Link to="/cart" className="relative">
                         <Button
                             type="button"
                             variant="ghost"
@@ -259,6 +265,7 @@ const Navbar = () => {
                             )}
                         </Button>
                     </Link>
+                    )}
 
                     {/* User / Login */}
                     {isLoading ? null : isAuthenticated ? (
@@ -306,12 +313,18 @@ const Navbar = () => {
                                 {/* Account Options */}
                                 <div className="mt-2 space-y-1">
                                     <Link
-                                        to="/dashboard"
+                                        to={isAdmin ? "/admin" : "/dashboard"}
                                         className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
                                     >
                                         <LayoutGrid className="size-4" />
 
-                                        {isArabic ? "لوحة التحكم" : "Dashboard"}
+                                        {isAdmin
+                                            ? isArabic
+                                                ? "لوحة الإدارة"
+                                                : "Admin Panel"
+                                            : isArabic
+                                              ? "لوحة التحكم"
+                                              : "Dashboard"}
                                     </Link>
 
                                     <Link

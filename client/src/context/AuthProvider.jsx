@@ -14,8 +14,12 @@ const AuthProvider = ({ children }) => {
             const response = await api.get("/auth/me");
 
             setUser(response.data.data);
+
+            return response.data.data;
         } catch (error) {
             setUser(null);
+
+            return null;
         } finally {
             setIsLoading(false);
         }

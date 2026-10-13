@@ -28,8 +28,14 @@ import EditCategory from "@/pages/adminDashboard/categories/EditCategory";
 import AddCakes from "@/pages/adminDashboard/cakes/AddCakes";
 import Cakes from "@/pages/adminDashboard/cakes/Cakes";
 import UpdateCake from "@/pages/adminDashboard/cakes/UpdateCake";
+import AdminOrders from "@/pages/adminDashboard/orders/Orders";
+import AdminOrderDetails from "@/pages/adminDashboard/orders/OrderDetails";
+import Customers from "@/pages/adminDashboard/customers/Customers";
 import PaymentSuccess from "@/pages/paymentResult/PaymentSuccess";
 import PaymentFailed from "@/pages/paymentResult/PaymentFailed";
+
+import RequireAuth from "@/components/guards/RequireAuth";
+import RedirectIfAuthenticated from "@/components/guards/RedirectIfAuthenticated";
 
 const Router = () => {
     return (
@@ -43,41 +49,98 @@ const Router = () => {
                 {/* Browse all cakes / search results (no category) */}
                 <Route path="/products" element={<Products />} />
 
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
+                <Route
+                    path="/cart"
+                    element={
+                        <RequireAuth roles={["user"]}>
+                            <Cart />
+                        </RequireAuth>
+                    }
+                />
+                <Route
+                    path="/checkout"
+                    element={
+                        <RequireAuth roles={["user"]}>
+                            <Checkout />
+                        </RequireAuth>
+                    }
+                />
 
                 <Route path="/order-tracking" element={<OrderTracking />} />
             </Route>
 
-            <Route path="/auth/register" element={<Register />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/verify-email" element={<VerifyEmail />} />
+            {/* Guest-only auth pages — signed-in users are bounced away */}
+            <Route
+                path="/auth/register"
+                element={
+                    <RedirectIfAuthenticated>
+                        <Register />
+                    </RedirectIfAuthenticated>
+                }
+            />
+            <Route
+                path="/auth/login"
+                element={
+                    <RedirectIfAuthenticated>
+                        <Login />
+                    </RedirectIfAuthenticated>
+                }
+            />
+            <Route
+                path="/auth/verify-email"
+                element={
+                    <RedirectIfAuthenticated>
+                        <VerifyEmail />
+                    </RedirectIfAuthenticated>
+                }
+            />
 
-            {/* dashboard */}
-            <Route path="/dashboard" element={<DashboardLayout />}>
-                <Route index element={<Dashboard />} />
+            {/* Customer dashboard — users only */}
+            <Route element={<RequireAuth roles={["user"]} />}>
+                <Route path="/dashboard" element={<DashboardLayout />}>
+                    <Route index element={<Dashboard />} />
 
-                <Route path="orders" element={<Orders />} />
+                    <Route path="orders" element={<Orders />} />
 
-                <Route path="orders/:orderId" element={<OrderDetails />} />
+                    <Route path="orders/:orderId" element={<OrderDetails />} />
 
-                <Route path="profile" element={<Profile />} />
-                <Route path="settings" element={<Settings />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="settings" element={<Settings />} />
+                </Route>
             </Route>
 
-            {/* admin */}
-            <Route path="/admin" element={<AdminDashboardLayout />}>
-                <Route index element={<AdminDashboard />} />
+            {/* Admin panel — admins only */}
+            <Route element={<RequireAuth roles={["admin"]} />}>
+                <Route path="/admin" element={<AdminDashboardLayout />}>
+                    <Route index element={<AdminDashboard />} />
 
-                <Route path="categories">
-                    <Route index element={<Categories />} />
-                    <Route path="add" element={<AddCategory />} />
-                    <Route path=":id" element={<EditCategory />} />
-                </Route>
-                <Route path="cakes">
-                    <Route index element={<Cakes />} />
-                    <Route path="add" element={<AddCakes />} />
-                    <Route path=":id" element={<UpdateCake />} />
+                    <Route path="categories">
+                        <Route index element={<Categories />} />
+                        <Route path="add" element={<AddCategory />} />
+                        <Route path=":id" element={<EditCategory />} />
+                    </Route>
+                    <Route path="cakes">
+                        <Route index element={<Cakes />} />
+                        <Route path="add" element={<AddCakes />} />
+                        <Route path=":id" element={<UpdateCake />} />
+                    </Route>
+                    <Route path="orders">
+                        <Route index element={<AdminOrders />} />
+                        <Route path="pending" element={<AdminOrders />} />
+                        <Route path="confirmed" element={<AdminOrders />} />
+                        <Route
+                            path="out-for-delivery"
+                            element={<AdminOrders />}
+                        />
+                        <Route path="delivered" element={<AdminOrders />} />
+                        <Route path="cancelled" element={<AdminOrders />} />
+                        <Route
+                            path=":orderId"
+                            element={<AdminOrderDetails />}
+                        />
+                    </Route>
+
+                    <Route path="customers" element={<Customers />} />
                 </Route>
             </Route>
             <Route path="/payment/success" element={<PaymentSuccess />} />
