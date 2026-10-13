@@ -56,10 +56,6 @@ const getGreeting = (hour) => {
     return "Good night";
 };
 
-/*
- * Live time + date for the top bar. Lives in its own component so the
- * ticking second only re-renders the clock instead of the whole layout.
- */
 const LiveClock = () => {
     const [now, setNow] = useState(() => new Date());
 
@@ -140,16 +136,7 @@ const DashboardLayout = () => {
     return (
         <div className="min-h-screen bg-muted/40">
             <div className="flex min-h-screen w-full">
-                {/*
-                 * Desktop sidebar — sticky at viewport height so the logout
-                 * button stays pinned at the bottom-left without scrolling.
-                 */}
                 <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-background lg:flex">
-                    {/*
-                     * Same construction as the top bar: the border sits
-                     * INSIDE the h-20 box, so the logo line and the header
-                     * border-b land at exactly the same level.
-                     */}
                     <div className="flex h-20 shrink-0 items-center border-b border-border px-6">
                         <NavLink
                             to="/"
@@ -216,11 +203,6 @@ const DashboardLayout = () => {
 
                 {/* Main Area */}
                 <div className="flex min-w-0 flex-1 flex-col">
-                    {/*
-                     * Top bar — greeting + user name on the left, live clock
-                     * and account chip on the right. The hamburger only shows
-                     * below lg (desktop uses the sidebar).
-                     */}
                     <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur-md sm:gap-4 sm:px-6">
                         <Sheet open={open} onOpenChange={setOpen}>
                             <SheetTrigger asChild>
@@ -322,8 +304,7 @@ const DashboardLayout = () => {
                             </p>
 
                             <h1 className="truncate text-base font-bold text-foreground sm:text-lg">
-                                Hello, {userName}{" "}
-                                <span aria-hidden="true">👋</span>
+                                Hello, {userName}
                             </h1>
                         </div>
 
