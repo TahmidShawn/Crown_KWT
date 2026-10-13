@@ -41,15 +41,17 @@ const Products = () => {
 
     const isArabic = language === "ar";
 
-    // Search term comes from the URL (?search=...) via the navbar search.
-    const search = searchParams.get("search")?.trim() || "";
+    // Search term comes from the URL when on the category/product/search routes.
+    const search = searchParams
+        .get("query")
+        ?.trim() || searchParams.get("search")?.trim() || "";
 
     /*
      * The category comes from the URL:
      *
      * /category/birtday  ->  slug = "birtday"
      *
-     * With no slug (/products or /products?search=...), we browse all
+     * With no slug (/search or /search?query=...), we browse all
      * active cakes and optionally filter by the search term.
      *
      * Price and size remain local filter state.
@@ -181,9 +183,13 @@ const Products = () => {
                     <div className="flex items-end justify-between gap-4">
                         <div>
                             <h1 className="text-3xl font-black tracking-[-0.04em] text-foreground md:text-4xl xl:text-5xl">
-                                {isArabic
-                                    ? "اكتشف الكعكات"
-                                    : "Explore our cakes"}
+                                {slug
+                                    ? (cakesResponse?.data?.[0]?.category?.[0]?.name?.[language] || "Category")
+                                    : search
+                                      ? isArabic
+                                          ? `نتائج البحث عن “${search}”`
+                                          : `Search results for “${search}”`
+                                      : "Explore our cakes"}
                             </h1>
 
                             <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground md:text-base">
@@ -380,7 +386,7 @@ const Products = () => {
 
                                         return (
                                             <Link
-                                                to={`/products/${cake.slug}`}
+                                                to={`/category/${cake.category?.slug || "browse"}`}
                                                 key={cake._id}
                                                 className="group flex flex-col overflow-hidden rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:shadow-lg"
                                             >
@@ -511,9 +517,13 @@ const Products = () => {
                                     </h2>
 
                                     <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-                                        {isArabic
-                                            ? "لا توجد كعكات متاحة في هذه الفئة."
-                                            : "There are no cakes available in this category."}
+                                        {search
+                                            ? isArabic
+                                                ? `لا توجد نتائج لـ "${search}".`
+                                                : `No results found for “${search}”.`
+                                            : isArabic
+                                              ? "لا توجد كعكات متاحة في هذه الفئة."
+                                              : "There are no cakes available in this category."}
                                     </p>
                                 </div>
                             )}

@@ -5,7 +5,6 @@ import DashboardLayout from "../layout/DashboardLayout";
 
 import Home from "../pages/home/Home";
 import Products from "@/pages/products/Products";
-import ProductDetails from "@/pages/productDetails/ProductDetails";
 import Cart from "@/pages/cart/Cart";
 import Checkout from "@/pages/checkout/Checkout";
 import OrderTracking from "@/pages/orderTracking/OrderTracking";
@@ -36,18 +35,20 @@ import PaymentFailed from "@/pages/paymentResult/PaymentFailed";
 
 import RequireAuth from "@/components/guards/RequireAuth";
 import RedirectIfAuthenticated from "@/components/guards/RedirectIfAuthenticated";
+import WhatsAppButton from "@/components/shared/whatsApp/WhatsAppButton";
 
 const Router = () => {
     return (
-        <Routes>
+        <>
+            <Routes>
             <Route element={<RootLayout />}>
                 <Route index element={<Home />} />
 
+                {/* Category → specific category page (no generic /products browse) */}
                 <Route path="/category/:slug" element={<Products />} />
-                <Route path="/products/:slug" element={<ProductDetails />} />
 
-                {/* Browse all cakes / search results (no category) */}
-                <Route path="/products" element={<Products />} />
+                {/* Search results (category-wise product view) */}
+                <Route path="/search" element={<Products />} />
 
                 <Route
                     path="/cart"
@@ -145,7 +146,11 @@ const Router = () => {
             </Route>
             <Route path="/payment/success" element={<PaymentSuccess />} />
             <Route path="/payment/failed" element={<PaymentFailed />} />
-        </Routes>
+            </Routes>
+
+            {/* Floating WhatsApp support — floats on every page except /admin */}
+            <WhatsAppButton />
+        </>
     );
 };
 

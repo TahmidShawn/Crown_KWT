@@ -66,9 +66,6 @@ const HotDeals = () => {
                         </p>
                     </div>
 
-                    <ViewAllButton to="/products" className="hidden md:flex">
-                        {isArabic ? "عرض الكل" : "View all"}
-                    </ViewAllButton>
                 </div>
 
                 {/* Loading */}
@@ -119,7 +116,7 @@ const HotDeals = () => {
 
                             return (
                                 <Link
-                                    to={`/products/${cake.slug}`}
+                                    to={`/category/${cake.category?.slug || "browse"}`}
                                     key={cake._id}
                                     className="group overflow-hidden rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card transition-all duration-300 hover:shadow-lg"
                                 >
@@ -239,9 +236,9 @@ const HotDeals = () => {
                     </div>
                 )}
 
-                {/* Mobile View All */}
+                {/* Mobile View All (no generic /products browse) */}
                 <ViewAllButton
-                    to="/products"
+                    to="/"
                     className="mt-6 w-full md:hidden"
                 >
                     {isArabic ? "عرض جميع العروض" : "View all deals"}

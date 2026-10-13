@@ -113,7 +113,7 @@ const Dashboard = () => {
                     variant="outline-asymmetric"
                     className="w-fit"
                 >
-                    <Link to="/products">
+                    <Link to="/">
                         Continue shopping
                         <ArrowUpRight className="ml-2 size-4" />
                     </Link>
@@ -240,7 +240,7 @@ const Dashboard = () => {
                                 variant="outline-asymmetric"
                                 className="mt-4"
                             >
-                                <Link to="/products">Start shopping</Link>
+                                <Link to="/">Start shopping</Link>
                             </Button>
                         </div>
                     )}

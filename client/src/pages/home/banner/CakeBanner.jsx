@@ -105,7 +105,7 @@ const CakeBanner = () => {
                             size="lg"
                             className="px-7 shadow-lg shadow-primary/20"
                         >
-                            <Link to="/products">
+                            <Link to="/">
                                 {t.banner.order}
                             </Link>
                         </Button>
@@ -116,7 +116,7 @@ const CakeBanner = () => {
                             size="lg"
                             className="bg-card px-7 text-foreground"
                         >
-                            <Link to="/products">
+                            <Link to="/">
                                 {t.banner.menu}
                             </Link>
                         </Button>

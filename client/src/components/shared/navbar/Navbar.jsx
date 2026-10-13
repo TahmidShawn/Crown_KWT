@@ -32,21 +32,22 @@ const Navbar = () => {
     const location = useLocation();
 
     /*
-     * The search box mirrors ?search= while on /products and clears itself
-     * elsewhere. Adjusting state during render (React's recommended pattern)
-     * keeps it in sync without a cascading effect.
+     * The search box mirrors ?query=/search= on the category/product routes
+     * and clears itself elsewhere. Adjusting state during render (React's
+     * recommended pattern) keeps it in sync without a cascading effect.
      */
-    const urlSearch =
-        location.pathname === "/products"
-            ? new URLSearchParams(location.search).get("search")?.trim() || ""
+    const searchFromUrl =
+        location.pathname === "/search"
+            ? new URLSearchParams(location.search).get("query") ??
+              new URLSearchParams(location.search).get("search")
             : "";
 
-    const [search, setSearch] = useState(urlSearch);
-    const [prevUrlSearch, setPrevUrlSearch] = useState(urlSearch);
+    const [search, setSearch] = useState(searchFromUrl);
+    const [prevUrlSearch, setPrevUrlSearch] = useState(searchFromUrl);
 
-    if (urlSearch !== prevUrlSearch) {
-        setPrevUrlSearch(urlSearch);
-        setSearch(urlSearch);
+    if (searchFromUrl !== prevUrlSearch) {
+        setPrevUrlSearch(searchFromUrl);
+        setSearch(searchFromUrl);
     }
 
     const { language, toggleLanguage, t } = useLanguage();
@@ -150,7 +151,7 @@ const Navbar = () => {
             return;
         }
 
-        navigate(`/products?search=${encodeURIComponent(term)}`);
+        navigate(`/search?query=${encodeURIComponent(term)}`);
     };
 
     return (
@@ -325,15 +326,6 @@ const Navbar = () => {
                                             : isArabic
                                               ? "لوحة التحكم"
                                               : "Dashboard"}
-                                    </Link>
-
-                                    <Link
-                                        to="/profile"
-                                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-                                    >
-                                        <User className="size-4" />
-
-                                        {isArabic ? "الملف الشخصي" : "Profile"}
                                     </Link>
 
                                     <button
