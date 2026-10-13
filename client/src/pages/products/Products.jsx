@@ -386,7 +386,7 @@ const Products = () => {
 
                                         return (
                                             <Link
-                                                to={`/category/${cake.category?.slug || "browse"}`}
+                                                to={`/cake/${cake.slug}`}
                                                 key={cake._id}
                                                 className="group flex flex-col overflow-hidden rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card transition-all duration-300 hover:border-primary/40 hover:shadow-lg"
                                             >

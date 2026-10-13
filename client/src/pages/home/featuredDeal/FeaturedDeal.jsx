@@ -119,7 +119,7 @@ const FeaturedDeal = () => {
 
                             <div className="mt-6">
                                 <PrimaryButton
-                                    to={`/category/${cake.category?.slug || "browse"}`}
+                                    to={`/cake/${cake.slug}`}
                                     type="button"
                                 >
                                     {isArabic ? "اطلب الآن" : "Order now"}

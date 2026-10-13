@@ -116,7 +116,7 @@ const HotDeals = () => {
 
                             return (
                                 <Link
-                                    to={`/category/${cake.category?.slug || "browse"}`}
+                                    to={`/cake/${cake.slug}`}
                                     key={cake._id}
                                     className="group overflow-hidden rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card transition-all duration-300 hover:shadow-lg"
                                 >

@@ -16,8 +16,8 @@ import VerifyEmail from "@/pages/auth/verifyEmail/VerifyEmail";
 import Dashboard from "@/pages/dashboard/Dashboard";
 import Orders from "@/pages/dashboard/orders/Orders";
 import OrderDetails from "@/pages/dashboard/orders/OrderDetails";
-import Profile from "@/pages/dashboard/profile/Profile";
 import Settings from "@/pages/dashboard/settings/Settings";
+import ProductDetails from "@/pages/productDetails/ProductDetails";
 
 import AdminDashboardLayout from "@/layout/AdminDashboardLayout";
 import AdminDashboard from "@/pages/adminDashboard/AdminDashboard";
@@ -46,6 +46,9 @@ const Router = () => {
 
                 {/* Category → specific category page (no generic /products browse) */}
                 <Route path="/category/:slug" element={<Products />} />
+
+                {/* Cake details — reached by clicking any cake card */}
+                <Route path="/cake/:slug" element={<ProductDetails />} />
 
                 {/* Search results (category-wise product view) */}
                 <Route path="/search" element={<Products />} />
@@ -105,7 +108,6 @@ const Router = () => {
 
                     <Route path="orders/:orderId" element={<OrderDetails />} />
 
-                    <Route path="profile" element={<Profile />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
             </Route>

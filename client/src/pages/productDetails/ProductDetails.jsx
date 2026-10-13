@@ -20,6 +20,7 @@ import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
 
 import ProductGallery from "./ProductGallery";
+import ProductAddOns from "./ProductAddOns";
 
 const flavorLabels = {
     chocolate: {
@@ -397,6 +398,9 @@ const ProductDetails = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Add-ons */}
+            <ProductAddOns />
 
             {/* Description / Reviews */}
             <section className="border-t border-border py-10 md:py-14">

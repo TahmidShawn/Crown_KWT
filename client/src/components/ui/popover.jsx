@@ -1,4 +1,4 @@
-import * as React from "react"
+import { isValidElement } from "react"
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 import { cn } from "cn"
 
@@ -8,10 +8,29 @@ function Popover({
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
+/*
+ * Base UI composes elements through its `render` prop — it has no Radix-style
+ * `asChild`. Call sites (Navbar, BottomBar) are still written with `asChild`, so
+ * the trigger translates it: the single child element replaces the default
+ * `<button>` instead of being nested inside it. Without this, Base UI renders a
+ * `<button>` inside the app's `<button>`, which is invalid HTML and crashes the
+ * React tree (blank page).
+ */
 function PopoverTrigger({
+  asChild = false,
+  children,
   ...props
 }) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
+  const composed = asChild && isValidElement(children)
+
+  return (
+    <PopoverPrimitive.Trigger
+      data-slot="popover-trigger"
+      render={composed ? children : undefined}
+      {...props}
+      {...(composed ? {} : { children })}
+    />
+  )
 }
 
 function PopoverContent({

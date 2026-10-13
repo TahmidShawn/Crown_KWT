@@ -5,7 +5,6 @@ import {
     Menu,
     Package,
     Settings,
-    User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -33,11 +32,6 @@ const navigation = [
         label: "My Orders",
         to: "/dashboard/orders",
         icon: Package,
-    },
-    {
-        label: "Profile",
-        to: "/dashboard/profile",
-        icon: User,
     },
     {
         label: "Settings",

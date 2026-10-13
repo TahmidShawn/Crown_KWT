@@ -196,11 +196,6 @@ const BottomBar = () => {
                                           : "Dashboard"}
                                 </Link>
 
-                                <Link to="/profile" className={linkClass}>
-                                    <User className="size-4" />
-                                    {isArabic ? "الملف الشخصي" : "Profile"}
-                                </Link>
-
                                 <button
                                     type="button"
                                     disabled={isLoggingOut}
