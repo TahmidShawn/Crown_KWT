@@ -15,6 +15,7 @@ import {
     authorizeRoles,
 } from "../middlewares/auth.middleware.js";
 import { validateRequest } from "../middlewares/validation.middleware.js";
+import { orderLimiter } from "../middlewares/rateLimiter.middleware.js";
 import { createOrderSchema } from "../validations/order.validation.js";
 
 const router = Router();
@@ -24,6 +25,7 @@ router
     .post(
         isAuthenticatedUser,
         authorizeRoles("user"),
+        orderLimiter,
         validateRequest(createOrderSchema),
         createOrder,
     )

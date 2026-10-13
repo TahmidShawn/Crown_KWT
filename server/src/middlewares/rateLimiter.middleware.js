@@ -33,3 +33,17 @@ export const webhookLimiter = rateLimit({
         message: "Too many webhook attempts. Please try again later.",
     },
 });
+
+// Guard placed directly on order creation — a transactional operation that
+// reserves stock and mutates the cart. This stops basket stuffing / DoS and
+// still lets the global limiter and authLimiter cover everything else.
+export const orderLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    limit: 8, // 8 orders per IP per 10 minutes
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: "Too many orders from this IP. Please try again later.",
+    },
+});

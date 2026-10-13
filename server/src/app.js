@@ -54,7 +54,13 @@ app.use(
         origin: [
             "http://localhost:5173",
             "https://fanciful-semifreddo-b91c8c.netlify.app",
-        ],
+            // Production client URLs — used by the deployed frontend.
+            // Keep these in sync with the `CORS_ORIGIN` / `CLIENT_URL`
+            // environment variables (comma-separated) for flexibility.
+            ...(process.env.CORS_ORIGIN
+                ? process.env.CORS_ORIGIN.split(",").map((url) => url.trim()).filter(Boolean)
+                : []),
+        ].filter(Boolean),
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -69,9 +75,14 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// health check
+// health check — for load balancers / orchestrators
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// root
 app.get("/", (req, res) => {
-    res.status(200).json({ status: "ok" });
+    res.status(200).json({ status: "ok", service: "december-cake-api" });
 });
 
 // router
