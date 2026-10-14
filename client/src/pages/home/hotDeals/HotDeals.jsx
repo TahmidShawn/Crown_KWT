@@ -7,7 +7,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
 
-const HotDeals = () => {
+const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
     const { language } = useLanguage();
     const isArabic = language === "ar";
 
@@ -49,20 +49,15 @@ const HotDeals = () => {
                     <div>
                         <div className="mb-3 inline-flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-4 py-2 text-xs font-semibold text-primary shadow-sm">
                             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-
-                            {isArabic ? "الأكثر مبيعاً" : "Top sellers"}
+                            {eyebrow ?? (isArabic ? "الأكثر مبيعاً" : "Top sellers")}
                         </div>
 
                         <h2 className="text-2xl font-extrabold tracking-[-0.03em] text-foreground md:text-3xl xl:text-4xl">
-                            {isArabic
-                                ? "عروض ساخنة لا تفوتها"
-                                : "Hot deals you’ll love"}
+                            {title ?? (isArabic ? "عروض ساخنة لا تفوتها" : "Hot deals you’ll love")}
                         </h2>
 
                         <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground md:text-base">
-                            {isArabic
-                                ? "اكتشف الكعكات الأكثر طلباً لدينا بأسعار مميزة."
-                                : "Discover our best-selling cakes at special prices."}
+                            {subtitle ?? (isArabic ? "اكتشف الكعكات الأكثر طلباً لدينا بأسعار مميزة." : "Discover our best-selling cakes at special prices.")}
                         </p>
                     </div>
 

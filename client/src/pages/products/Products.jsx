@@ -24,7 +24,7 @@ import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
 
 import ProductFilters from "./ProductFilters";
-import YouMayAlsoLike from "@/components/shared/youMayAlsoLike/YouMayAlsoLike";
+import HotDeals from "@/pages/home/hotDeals/HotDeals";
 
 const initialFilters = {
     price: null,
@@ -534,7 +534,11 @@ const Products = () => {
             </section>
 
             {cakes.length > 0 && (
-                <HotDeals />
+                <HotDeals
+                    eyebrow={isArabic ? "اقتراحات لك" : "Suggested for you"}
+                    title={isArabic ? "كعكات قد تعجبك" : "Suggested cakes"}
+                    subtitle={isArabic ? "مختارات المتجر التي قد تعجبك" : "Handpicked cakes from our other collections."}
+                />
             )}
         </main>
     );
