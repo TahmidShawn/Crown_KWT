@@ -35,11 +35,13 @@ import PaymentFailed from "@/pages/paymentResult/PaymentFailed";
 
 import RequireAuth from "@/components/guards/RequireAuth";
 import RedirectIfAuthenticated from "@/components/guards/RedirectIfAuthenticated";
+import ScrollToTop from "@/components/ScrollToTop";
 import WhatsAppButton from "@/components/shared/whatsApp/WhatsAppButton";
 
 const Router = () => {
     return (
         <>
+            <ScrollToTop />
             <Routes>
             <Route element={<RootLayout />}>
                 <Route index element={<Home />} />
