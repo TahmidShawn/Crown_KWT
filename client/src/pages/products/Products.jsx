@@ -24,6 +24,7 @@ import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
 
 import ProductFilters from "./ProductFilters";
+import YouMayAlsoLike from "@/components/shared/youMayAlsoLike/YouMayAlsoLike";
 
 const initialFilters = {
     price: null,
@@ -531,6 +532,10 @@ const Products = () => {
                     </div>
                 </div>
             </section>
+
+            {cakes.length > 0 && (
+                <YouMayAlsoLike excludeSlug={slug} excludeIds={cakes.map((cake) => cake._id)} />
+            )}
         </main>
     );
 };
