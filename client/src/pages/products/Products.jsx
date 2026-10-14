@@ -533,13 +533,13 @@ const Products = () => {
                 </div>
             </section>
 
-            {cakes.length > 0 && (
-                <HotDeals
-                    eyebrow={isArabic ? "اقتراحات لك" : "Suggested for you"}
-                    title={isArabic ? "كعكات قد تعجبك" : "Suggested cakes"}
-                    subtitle={isArabic ? "مختارات المتجر التي قد تعجبك" : "Handpicked cakes from our other collections."}
-                />
-            )}
+            {/* Suggested cakes — fetches its own top-discounted cakes, so it
+            renders on every category page even when this category is empty */}
+            <HotDeals
+                eyebrow={isArabic ? "اقتراحات لك" : "Suggested for you"}
+                title={isArabic ? "كعكات قد تعجبك" : "Suggested cakes"}
+                subtitle={isArabic ? "مختارات المتجر التي قد تعجبك" : "Handpicked cakes from our other collections."}
+            />
         </main>
     );
 };
