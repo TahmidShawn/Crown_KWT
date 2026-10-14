@@ -33,9 +33,11 @@ const Login = () => {
     const location = useLocation();
     const { refreshUser } = useAuth();
 
-    // Where RequireAuth asked us to send the user after a successful login
-    // (deep-linked protected page). Falls back to the role's home.
-    const returnTo = location.state?.from?.pathname;
+    // Where RequireAuth (or add-to-cart) asked us to send the user after a
+    // successful login (deep-linked protected page). Falls back to home.
+    const returnTo = location.state?.from
+        ? location.state.from.pathname + (location.state.from.search || "")
+        : null;
 
     const redirectAfterLogin = (role) => {
         if (returnTo && !returnTo.startsWith("/auth")) {
@@ -312,6 +314,7 @@ const Login = () => {
                             Don't have an account?{" "}
                             <Link
                                 to="/auth/register"
+                                state={location.state}
                                 className="font-semibold text-primary hover:underline"
                             >
                                 Create an account

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Check, Loader2, Minus, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -183,6 +183,7 @@ const QuantityControl = ({
 const FeaturedAddOn = ({ addOn, language, selected, quantity, onUpdated }) => {
     const isArabic = language === "ar";
     const navigate = useNavigate();
+    const location = useLocation();
     const { isAuthenticated, user } = useAuth();
 
     const { mutate: addCartAddOn, isPending: isAdding } = usePost({
@@ -211,7 +212,10 @@ const FeaturedAddOn = ({ addOn, language, selected, quantity, onUpdated }) => {
                     : "Please log in to add add-ons to your cart",
             );
 
-            navigate("/auth/login");
+            navigate("/auth/login", {
+                replace: true,
+                state: { from: location },
+            });
             return;
         }
 

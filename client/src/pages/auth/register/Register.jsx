@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useGoogleLogin } from "@react-oauth/google";
 import { z } from "zod";
 
@@ -36,6 +36,22 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Carried from Login (originally from RequireAuth / add-to-cart) so
+    // Google register can send the user back where they came from.
+    const returnTo = location.state?.from
+        ? location.state.from.pathname + (location.state.from.search || "")
+        : null;
+
+    const redirectAfterRegister = () => {
+        if (returnTo && !returnTo.startsWith("/auth")) {
+            navigate(returnTo, { replace: true });
+            return;
+        }
+
+        navigate("/");
+    };
 
     const { refreshUser } = useAuth();
 
@@ -78,7 +94,7 @@ const Register = () => {
                     onSuccess: async () => {
                         await refreshUser();
 
-                        navigate("/");
+                        redirectAfterRegister();
                     },
                 },
             );
@@ -94,6 +110,9 @@ const Register = () => {
                 navigate("/auth/verify-email", {
                     state: {
                         email: formData.email,
+                        // New accounts must verify first — remember where to
+                        // send them after that step completes.
+                        from: location.state?.from,
                     },
                 });
             },

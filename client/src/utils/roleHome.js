@@ -3,7 +3,7 @@ export const getRoleHome = (role) => {
         return "/admin";
     }
 
-    return "/dashboard";
+    return "/";
 };
 
 export default getRoleHome;

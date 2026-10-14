@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 import api from "@/api/axios";
@@ -9,6 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 const useAddToCart = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const location = useLocation();
     const { isAuthenticated, user } = useAuth();
     const { language } = useLanguage();
     const isArabic = language === "ar";
@@ -49,7 +50,10 @@ const useAddToCart = () => {
                     : "Please log in to add cakes to your cart",
             );
 
-            navigate("/auth/login");
+            navigate("/auth/login", {
+                replace: true,
+                state: { from: location },
+            });
             return;
         }
 
