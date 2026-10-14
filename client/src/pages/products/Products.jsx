@@ -534,7 +534,7 @@ const Products = () => {
             </section>
 
             {cakes.length > 0 && (
-                <YouMayAlsoLike excludeSlug={slug} excludeIds={cakes.map((cake) => cake._id)} />
+                <HotDeals />
             )}
         </main>
     );
