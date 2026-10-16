@@ -6,7 +6,6 @@ import {
     ChevronDown,
     LayoutDashboard,
     Menu,
-    Settings,
     ShoppingBag,
     Tags,
     Users,
@@ -59,11 +58,6 @@ const simpleNavigation = [
         title: "Customers",
         path: "/admin/customers",
         icon: Users,
-    },
-    {
-        title: "Settings",
-        path: "/admin/settings",
-        icon: Settings,
     },
 ];
 
@@ -225,36 +219,34 @@ export default function AdminDashboardLayout() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-muted/30">
-            {/* Desktop Sidebar — always expanded; there is no collapse toggle */}
-            <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:block">
-                <SidebarContent />
-            </aside>
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <div className="min-h-screen bg-muted/30">
+                {/* Desktop Sidebar — always expanded; there is no collapse toggle */}
+                <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:block">
+                    <SidebarContent />
+                </aside>
 
-            {/* Mobile Sidebar */}
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                {/* Mobile Sidebar — content belongs to the same Sheet root as the trigger below */}
                 <SheetContent side="left" className="w-72 p-0">
                     <SidebarContent onNavigate={() => setMobileOpen(false)} />
                 </SheetContent>
-            </Sheet>
 
-            {/* Main */}
-            <div className="min-h-screen lg:pl-64">
-                {/* Header */}
-                <header className="sticky top-0 z-30 flex h-20 items-center border-b bg-background/95 px-4 backdrop-blur md:px-6">
-                    <div className="flex items-center gap-3">
-                        {/* Mobile Menu */}
-                        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                {/* Main */}
+                <div className="min-h-screen lg:pl-64">
+                    {/* Header */}
+                    <header className="sticky top-0 z-30 flex h-20 items-center border-b bg-background/95 px-4 backdrop-blur md:px-6">
+                        <div className="flex items-center gap-3">
+                            {/* Mobile Menu */}
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     className="lg:hidden"
+                                    aria-label="Open menu"
                                 >
                                     <Menu className="size-5" />
                                 </Button>
                             </SheetTrigger>
-                        </Sheet>
 
                         <div>
                             <h1 className="text-lg font-semibold">
@@ -285,6 +277,7 @@ export default function AdminDashboardLayout() {
                     <Outlet />
                 </main>
             </div>
-        </div>
+            </div>
+        </Sheet>
     );
 }
