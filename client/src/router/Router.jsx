@@ -32,6 +32,8 @@ import AdminOrderDetails from "@/pages/adminDashboard/orders/OrderDetails";
 import Customers from "@/pages/adminDashboard/customers/Customers";
 import PaymentSuccess from "@/pages/paymentResult/PaymentSuccess";
 import PaymentFailed from "@/pages/paymentResult/PaymentFailed";
+import Policy from "@/pages/legal/Policy";
+import TermsConditions from "@/pages/legal/TermsConditions";
 
 import RequireAuth from "@/components/guards/RequireAuth";
 import RedirectIfAuthenticated from "@/components/guards/RedirectIfAuthenticated";
@@ -74,6 +76,10 @@ const Router = () => {
                 />
 
                 <Route path="/order-tracking" element={<OrderTracking />} />
+
+                <Route path="/privacy" element={<Policy />} />
+
+                <Route path="/terms" element={<TermsConditions />} />
 
                 {/* Direct /404 — for programmatic navigate("/404") calls */}
                 <Route path="/404" element={<NotFound />} />

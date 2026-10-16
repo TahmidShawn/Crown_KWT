@@ -180,6 +180,24 @@ const Footer = () => {
 
                     <div className="flex items-center gap-3">
                         <Link
+                            to="/privacy"
+                            className="transition-colors hover:text-primary"
+                        >
+                            {isArabic ? "سياسة الخصوصية" : "Privacy Policy"}
+                        </Link>
+
+                        <span aria-hidden="true" className="text-border">
+                            |
+                        </span>
+
+                        <Link
+                            to="/terms"
+                            className="transition-colors hover:text-primary"
+                        >
+                            {isArabic ? "الشروط والأحكام" : "Terms"}
+                        </Link>
+
+                        <Link
                             to="/order-tracking"
                             className="rounded-full border border-border bg-card px-3 py-1.5 transition-colors hover:border-primary/40 hover:text-primary"
                         >
