@@ -4,6 +4,7 @@ import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
+import useGet from "@/hooks/useGet";
 
 const cakes = [
     {
@@ -46,6 +47,18 @@ const cakes = [
 const CakeBanner = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const { t } = useLanguage();
+
+    // First category — both CTA buttons land on its page.
+    const { data: categoriesResponse } = useGet({
+        url: "/categories",
+        queryKey: ["categories"],
+        retry: false,
+    });
+
+    const firstCategory = categoriesResponse?.data?.[0];
+    const firstCategoryPath = firstCategory?.slug
+        ? `/category/${firstCategory.slug}`
+        : "/search";
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -105,7 +118,7 @@ const CakeBanner = () => {
                             size="lg"
                             className="px-7 shadow-lg shadow-primary/20"
                         >
-                            <Link to="/">
+                            <Link to={firstCategoryPath}>
                                 {t.banner.order}
                             </Link>
                         </Button>
@@ -116,7 +129,7 @@ const CakeBanner = () => {
                             size="lg"
                             className="bg-card px-7 text-foreground"
                         >
-                            <Link to="/">
+                            <Link to={firstCategoryPath}>
                                 {t.banner.menu}
                             </Link>
                         </Button>

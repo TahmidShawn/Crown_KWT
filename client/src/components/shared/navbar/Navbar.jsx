@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-    Cake,
     Languages,
     LayoutGrid,
     LogOut,
@@ -19,6 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import cwtLogo from "@/assets/cwt-logo.jpg";
 import useAuth from "@/hooks/useAuth";
 import useGet from "@/hooks/useGet";
 import usePost from "@/hooks/usePost";
@@ -31,11 +31,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    /*
-     * The search box mirrors ?query=/search= on the category/product routes
-     * and clears itself elsewhere. Adjusting state during render (React's
-     * recommended pattern) keeps it in sync without a cascading effect.
-     */
+    
     const searchFromUrl =
         location.pathname === "/search"
             ? new URLSearchParams(location.search).get("query") ??
@@ -169,21 +165,11 @@ const Navbar = () => {
                     aria-label="Crown Kwt home"
                     className="flex shrink-0 items-center gap-2"
                 >
-                    <div
-                        className={`flex h-9 w-9 items-center justify-center rounded-tl-xl rounded-br-xl transition-colors ${
-                            scrolled
-                                ? "bg-primary-foreground/15"
-                                : "bg-secondary"
-                        }`}
-                    >
-                        <Cake
-                            className={`h-5 w-5 ${
-                                scrolled
-                                    ? "text-primary-foreground"
-                                    : "text-primary"
-                            }`}
-                        />
-                    </div>
+                    <img
+                        src={cwtLogo}
+                        alt="Crown Kwt logo"
+                        className="h-12 w-16 rounded-tl-xl rounded-br-xl object-cover"
+                    />
 
                     <span className="hidden text-lg font-bold tracking-tight sm:block">
                         Crown Kwt
@@ -295,7 +281,7 @@ const Navbar = () => {
                                 {/* Account Header */}
                                 <div className="flex items-center gap-3 rounded-xl bg-secondary/60 p-3">
                                     <div className="flex size-9 shrink-0 items-center justify-center rounded-tl-xl rounded-br-xl bg-primary text-primary-foreground">
-                                        <Cake className="size-4" />
+                                        <User className="size-4" />
                                     </div>
 
                                     <div className="min-w-0">

@@ -37,6 +37,7 @@ import RequireAuth from "@/components/guards/RequireAuth";
 import RedirectIfAuthenticated from "@/components/guards/RedirectIfAuthenticated";
 import ScrollToTop from "@/components/ScrollToTop";
 import WhatsAppButton from "@/components/shared/whatsApp/WhatsAppButton";
+import NotFound from "@/pages/notFound/NotFound";
 
 const Router = () => {
     return (
@@ -73,6 +74,12 @@ const Router = () => {
                 />
 
                 <Route path="/order-tracking" element={<OrderTracking />} />
+
+                {/* Direct /404 — for programmatic navigate("/404") calls */}
+                <Route path="/404" element={<NotFound />} />
+
+                {/* Unknown public URL — still inside navbar/footer layout */}
+                <Route path="*" element={<NotFound />} />
             </Route>
 
             {/* Guest-only auth pages — signed-in users are bounced away */}
@@ -111,6 +118,9 @@ const Router = () => {
                     <Route path="orders/:orderId" element={<OrderDetails />} />
 
                     <Route path="settings" element={<Settings />} />
+
+                    {/* Unknown /dashboard/* URL — stays inside the user layout */}
+                    <Route path="*" element={<NotFound />} />
                 </Route>
             </Route>
 
@@ -146,10 +156,16 @@ const Router = () => {
                     </Route>
 
                     <Route path="customers" element={<Customers />} />
+
+                    {/* Unknown /admin/* URL — stays inside the admin layout */}
+                    <Route path="*" element={<NotFound />} />
                 </Route>
             </Route>
             <Route path="/payment/success" element={<PaymentSuccess />} />
             <Route path="/payment/failed" element={<PaymentFailed />} />
+
+            {/* Absolute fallback — auth pages, payments, anything else */}
+            <Route path="*" element={<NotFound />} />
             </Routes>
 
             {/* Floating WhatsApp support — floats on every page except /admin */}

@@ -1,25 +1,14 @@
 import { useLocation } from "react-router";
 
 import { useLanguage } from "@/context/LanguageContext";
-
-// Fallback used when VITE_WHATSAPP_NUMBER is missing at build time
-// (Netlify deploys don't receive your gitignored local .env) or still
-// holds a placeholder value. Set the real number in Netlify:
-// Site settings > Environment variables > VITE_WHATSAPP_NUMBER.
-const FALLBACK_WHATSAPP_NUMBER = "96522222222";
+import { WHATSAPP_NUMBER } from "@/config/contact";
 
 const WhatsAppButton = () => {
     const { pathname } = useLocation();
     const { language } = useLanguage();
     const isArabic = language === "ar";
 
-    const raw = import.meta.env.VITE_WHATSAPP_NUMBER || "";
-    const digits = String(raw).replace(/\D/g, "");
-    // A real Kuwait number is 11 digits (965 + 8 local). Anything shorter
-    // means "not configured / placeholder", so fall back instead of hiding.
-    const phone = digits.length >= 8
-        ? digits
-        : FALLBACK_WHATSAPP_NUMBER;
+    const phone = WHATSAPP_NUMBER;
 
     // Hidden on /admin routes only — the button always has a number now.
     if (pathname.startsWith("/admin")) return null;

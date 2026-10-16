@@ -2,7 +2,6 @@ import { Loader2, Plus } from "lucide-react";
 import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
-import ViewAllButton from "@/components/shared/button/SecondaryButton";
 import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
@@ -230,14 +229,6 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
                         })}
                     </div>
                 )}
-
-                {/* Mobile View All (no generic /products browse) */}
-                <ViewAllButton
-                    to="/"
-                    className="mt-6 w-full md:hidden"
-                >
-                    {isArabic ? "عرض جميع العروض" : "View all deals"}
-                </ViewAllButton>
             </div>
         </section>
     );
