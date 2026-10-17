@@ -27,6 +27,9 @@ import EditCategory from "@/pages/adminDashboard/categories/EditCategory";
 import AddCakes from "@/pages/adminDashboard/cakes/AddCakes";
 import Cakes from "@/pages/adminDashboard/cakes/Cakes";
 import UpdateCake from "@/pages/adminDashboard/cakes/UpdateCake";
+import AddAddOn from "@/pages/adminDashboard/addOns/AddAddOn";
+import AddOns from "@/pages/adminDashboard/addOns/AddOns";
+import EditAddOn from "@/pages/adminDashboard/addOns/EditAddOn";
 import AdminOrders from "@/pages/adminDashboard/orders/Orders";
 import AdminOrderDetails from "@/pages/adminDashboard/orders/OrderDetails";
 import Customers from "@/pages/adminDashboard/customers/Customers";
@@ -144,6 +147,11 @@ const Router = () => {
                         <Route index element={<Cakes />} />
                         <Route path="add" element={<AddCakes />} />
                         <Route path=":id" element={<UpdateCake />} />
+                    </Route>
+                    <Route path="add-ons">
+                        <Route index element={<AddOns />} />
+                        <Route path="add" element={<AddAddOn />} />
+                        <Route path=":id" element={<EditAddOn />} />
                     </Route>
                     <Route path="orders">
                         <Route index element={<AdminOrders />} />

@@ -3,6 +3,7 @@ import {
     Cake,
     ChevronRight,
     Loader2,
+    PackagePlus,
     RefreshCw,
     ShoppingBag,
     Tags,
@@ -43,6 +44,13 @@ export default function AdminDashboard() {
             caption: "Cake categories",
             icon: Tags,
             to: "/admin/categories",
+        },
+        {
+            title: "Add-ons",
+            value: stats?.totalAddOns,
+            caption: "Extras customers can pick",
+            icon: PackagePlus,
+            to: "/admin/add-ons",
         },
         {
             title: "Customers",

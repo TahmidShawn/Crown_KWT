@@ -6,6 +6,7 @@ import {
     ChevronDown,
     LayoutDashboard,
     Menu,
+    PackagePlus,
     ShoppingBag,
     Tags,
     Users,
@@ -49,6 +50,14 @@ const navigationGroups = [
         items: [
             { title: "All Categories", path: "/admin/categories" },
             { title: "Add Category", path: "/admin/categories/add" },
+        ],
+    },
+    {
+        title: "Add-ons",
+        icon: PackagePlus,
+        items: [
+            { title: "All Add-ons", path: "/admin/add-ons" },
+            { title: "Add Add-on", path: "/admin/add-ons/add" },
         ],
     },
 ];
