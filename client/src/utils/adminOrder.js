@@ -26,6 +26,9 @@ export const canCancelOrder = (order) =>
     order?.orderStatus === "pending" &&
     order?.paymentMethod === "cash_on_delivery";
 
+export const isAwaitingOnlinePayment = (order) =>
+    order?.paymentMethod === "online" && order?.paymentStatus !== "paid";
+
 export const getNextStatuses = (order) => {
     if (!order) return [];
 
@@ -36,6 +39,12 @@ export const getNextStatuses = (order) => {
         currentIndex === ORDER_FLOW.length - 1;
 
     if (isFinal) return [];
+
+    // Option A: unpaid online orders show no forward actions.
+    // They stay visible as pending with a payment hint until paid.
+    if (isAwaitingOnlinePayment(order)) {
+        return [];
+    }
 
     const next =
         currentIndex >= 0

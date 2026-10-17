@@ -65,6 +65,7 @@ import {
     formatPaymentStatus,
     formatPrice,
     getNextStatuses,
+    isAwaitingOnlinePayment,
 } from "@/utils/adminOrder";
 
 const STATUS_TABS = [
@@ -130,6 +131,7 @@ const Actions = ({ order, onStatusAction, onCancelOrder }) => {
     );
 
     const cancelAllowed = canCancelOrder(order);
+    const awaitingPayment = isAwaitingOnlinePayment(order);
 
     const copyOrderNumber = async () => {
         try {
@@ -200,7 +202,11 @@ const Actions = ({ order, onStatusAction, onCancelOrder }) => {
                     <DropdownMenuGroup>
                         <DropdownMenuLabel>Update status</DropdownMenuLabel>
 
-                        {nextStatuses.length === 0 ? (
+                        {awaitingPayment ? (
+                            <DropdownMenuItem disabled>
+                                Awaiting online payment
+                            </DropdownMenuItem>
+                        ) : nextStatuses.length === 0 ? (
                             <DropdownMenuItem disabled>
                                 Order is finalized
                             </DropdownMenuItem>

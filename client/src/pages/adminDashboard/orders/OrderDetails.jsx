@@ -51,6 +51,7 @@ import {
     formatPaymentStatus,
     formatPrice,
     getNextStatuses,
+    isAwaitingOnlinePayment,
 } from "@/utils/adminOrder";
 
 const STATUS_ICONS = {
@@ -131,7 +132,8 @@ const OrderActionsCard = ({ order, isUpdating, onAskStatus }) => {
     const nextStatuses = getNextStatuses(order);
     const changeable = nextStatuses.filter((status) => status !== "cancelled");
     const cancelAllowed = canCancelOrder(order);
-    const isFinal = nextStatuses.length === 0;
+    const awaitingPayment = isAwaitingOnlinePayment(order);
+    const isFinal = nextStatuses.length === 0 && !awaitingPayment;
 
     return (
         <Card className="rounded-2xl border bg-background shadow-none">
@@ -140,6 +142,13 @@ const OrderActionsCard = ({ order, isUpdating, onAskStatus }) => {
             </CardHeader>
 
             <CardContent className="space-y-5 px-5 pb-5 sm:pb-6">
+                {awaitingPayment && (
+                    <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">
+                        Awaiting online payment — status actions unlock after
+                        the customer pays. The order stays here so it can be
+                        confirmed once payment arrives.
+                    </div>
+                )}
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="space-y-1.5">
                         <p className="text-sm font-medium text-foreground">
