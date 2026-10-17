@@ -1,10 +1,11 @@
 import { Router } from "express";
 import {
-    createAddOn,
     getAddOns,
+    getAdminAddOns,
     getAddOn,
     updateAddOn,
     deleteAddOn,
+    createAddOn,
 } from "../controllers/addOn.controller.js";
 import {
     isAuthenticatedUser,
@@ -19,9 +20,16 @@ import upload from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
+// Public add-ons (active only) — used by storefront/cart
+router.route("/add-ons").get(getAddOns);
+
+// Public single add-on
+router.route("/add-ons/:id").get(getAddOn);
+
+// Admin add-on management (all incl. inactive) — like /admin/categories
 router
-    .route("/add-ons")
-    .get(getAddOns)
+    .route("/admin/add-ons")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getAdminAddOns)
     .post(
         isAuthenticatedUser,
         authorizeRoles("admin"),
@@ -30,9 +38,9 @@ router
         createAddOn,
     );
 
+// Admin add-on update/delete
 router
-    .route("/add-ons/:id")
-    .get(getAddOn)
+    .route("/admin/add-ons/:id")
     .put(
         isAuthenticatedUser,
         authorizeRoles("admin"),

@@ -3,6 +3,31 @@ import ErrorHandler from "../utils/errorHandler.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { uploadFile, deleteFile } from "../services/storage.service.js";
 
+// FormData always arrives as strings — normalize "true"/"false"/"1"/"0".
+const toBoolean = (value, fallback) => {
+    if (value === undefined || value === null || value === "") {
+        return fallback;
+    }
+
+    if (typeof value === "boolean") {
+        return value;
+    }
+
+    if (typeof value === "string") {
+        const normalized = value.trim().toLowerCase();
+
+        if (["true", "1"].includes(normalized)) {
+            return true;
+        }
+
+        if (["false", "0"].includes(normalized)) {
+            return false;
+        }
+    }
+
+    return fallback;
+};
+
 export const createAddOn = asyncHandler(async (req, res) => {
     const { nameEn, nameAr, price, isActive } = req.body;
     const file = req.file;
@@ -38,7 +63,7 @@ export const createAddOn = asyncHandler(async (req, res) => {
             imageUrl: url,
             imageFileId: fileId,
             price: Number(price),
-            isActive: isActive !== undefined ? isActive : true,
+            isActive: toBoolean(isActive, true),
         });
     } catch (error) {
         await deleteFile(fileId);
@@ -56,6 +81,18 @@ export const getAddOns = asyncHandler(async (req, res) => {
     const addOns = await AddOn.find({
         isActive: true,
     }).sort({
+        createdAt: -1,
+    });
+
+    res.status(200).json({
+        success: true,
+        message: "Add-ons fetched successfully",
+        data: addOns,
+    });
+});
+
+export const getAdminAddOns = asyncHandler(async (req, res) => {
+    const addOns = await AddOn.find().sort({
         createdAt: -1,
     });
 
@@ -122,7 +159,7 @@ export const updateAddOn = asyncHandler(async (req, res) => {
     }
 
     if (isActive !== undefined) {
-        updateData.isActive = isActive;
+        updateData.isActive = toBoolean(isActive, addOn.isActive);
     }
 
     let newFileId = null;

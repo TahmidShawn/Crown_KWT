@@ -2,6 +2,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import Order from "../models/order.model.js";
 import Cake from "../models/cake.model.js";
 import Category from "../models/category.model.js";
+import AddOn from "../models/addOn.model.js";
 import User from "../models/user.model.js";
 
 export const getAdminStats = asyncHandler(async (req, res) => {
@@ -10,12 +11,14 @@ export const getAdminStats = asyncHandler(async (req, res) => {
         pendingOrders,
         totalProducts,
         totalCategories,
+        totalAddOns,
         orderingUserIds,
     ] = await Promise.all([
         Order.countDocuments(),
         Order.countDocuments({ orderStatus: "pending" }),
         Cake.countDocuments(),
         Category.countDocuments(),
+        AddOn.countDocuments(),
         Order.distinct("user"),
     ]);
 
@@ -34,6 +37,7 @@ export const getAdminStats = asyncHandler(async (req, res) => {
             pendingOrders,
             totalProducts,
             totalCategories,
+            totalAddOns,
             totalCustomers,
         },
     });
