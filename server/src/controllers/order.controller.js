@@ -613,13 +613,17 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
                 return;
             }
 
+            // Option A: unpaid online orders are stuck at "pending".
+            // They can never move to confirmed / out_for_delivery / delivered
+            // until paymentStatus becomes "paid" (webhook or callback).
+            // The order stays in the DB, visible on the dashboard with a
+            // "Payment: Pending" badge; paying late unlocks the flow.
             if (
-                status === "confirmed" &&
                 order.paymentMethod === "online" &&
                 order.paymentStatus !== "paid"
             ) {
                 throw new ErrorHandler(
-                    "Online order must be paid before confirmation",
+                    "Online order must be paid before it can be processed",
                     400,
                 );
             }
