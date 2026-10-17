@@ -228,6 +228,10 @@ const Checkout = () => {
 
     const totalPrice = subtotal + deliveryFee;
 
+    // MyFatoorah rejects zero-amount invoices — smallest chargeable
+    // KWD unit is 0.100. Warn before creating an unpaid online order.
+    const MIN_ONLINE_TOTAL = 0.1;
+
     const updateAddress = (field, value) => {
         setAddress((previous) => ({
             ...previous,
@@ -346,6 +350,13 @@ const Checkout = () => {
         if (!selectedCakeIds.length) {
             toast.error("No cakes selected for checkout.");
             navigate("/cart");
+            return;
+        }
+
+        if (paymentMethod === "online" && totalPrice < MIN_ONLINE_TOTAL) {
+            toast.error(
+                "Online payment needs a minimum of 0.100 KWD. Please add items or choose cash on delivery.",
+            );
             return;
         }
 
@@ -611,7 +622,11 @@ const Checkout = () => {
                                 onSelect={setPaymentMethod}
                                 icon={CreditCard}
                                 title="Online payment"
-                                description="Pay securely using MyFatoorah."
+                                description={
+                                    totalPrice < MIN_ONLINE_TOTAL
+                                        ? "Needs min. 0.100 KWD total."
+                                        : "Pay securely using MyFatoorah."
+                                }
                             />
 
                             <PaymentCard
@@ -623,6 +638,14 @@ const Checkout = () => {
                                 description="Pay when your order arrives."
                             />
                         </div>
+
+                        {totalPrice < MIN_ONLINE_TOTAL && (
+                            <p className="mt-3 text-xs text-muted-foreground">
+                                Online payment needs a minimum order total of
+                                0.100 KWD — free orders can only use cash on
+                                delivery.
+                            </p>
+                        )}
 
                         {!paymentMethod && (
                             <p className="mt-3 text-xs text-muted-foreground">
