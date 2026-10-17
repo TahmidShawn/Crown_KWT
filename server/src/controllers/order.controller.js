@@ -9,6 +9,11 @@ import asyncHandler from "../utils/asyncHandler.js";
 // KWD uses 3 decimal places
 const round3 = (value) => Number(Number(value).toFixed(3));
 
+// MyFatoorah rejects zero-amount invoices ("must be greater than 0").
+// Smallest chargeable KWD unit: 0.100 (100 fils). Online orders below
+// this are rejected at creation so the user picks COD or adds items.
+const MIN_ONLINE_TOTAL = 0.1;
+
 export const createOrder = asyncHandler(async (req, res) => {
     const { paymentMethod, cakeIds, addOns = [], shippingAddress } = req.body;
 
@@ -243,6 +248,15 @@ export const createOrder = asyncHandler(async (req, res) => {
 
             // Same number the customer sees on the checkout page
             const totalPrice = round3(subtotal - discount + deliveryFee);
+
+            // Online orders must be chargeable via MyFatoorah.
+            // Free / near-free totals can only go through cash on delivery.
+            if (paymentMethod === "online" && totalPrice < MIN_ONLINE_TOTAL) {
+                throw new ErrorHandler(
+                    "Online payment requires a minimum order total of 0.100 KWD. Please add items or choose cash on delivery.",
+                    400,
+                );
+            }
 
             const [order] = await Order.create(
                 [
