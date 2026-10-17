@@ -88,6 +88,17 @@ export const createPayment = asyncHandler(async (req, res) => {
             },
         });
 
+        if (!result?.PaymentURL) {
+            logger.error(
+                { orderId: order._id.toString(), result },
+                "[createPayment] MyFatoorah returned no PaymentURL",
+            );
+            throw new ErrorHandler(
+                "Payment provider did not return a payment link",
+                502,
+            );
+        }
+
         payment.invoiceId = result.InvoiceId;
         payment.paymentUrl = result.PaymentURL;
         payment.status = "pending";
@@ -107,7 +118,15 @@ export const createPayment = asyncHandler(async (req, res) => {
             { err: error, orderId: order._id.toString() },
             "[createPayment] MyFatoorah failed",
         );
-        throw new ErrorHandler("Unable to create payment", 502);
+
+        if (error instanceof ErrorHandler) {
+            throw error;
+        }
+
+        throw new ErrorHandler(
+            `Unable to create payment: ${error?.message || "payment provider error"}`,
+            502,
+        );
     }
 });
 export const paymentCallback = asyncHandler(async (req, res) => {
