@@ -82,7 +82,6 @@ export default function EditAddOn() {
     const image = watch("image");
     const isActive = watch("isActive");
 
-    // GET single add-on
     const {
         data: addOnResponse,
         isLoading: isLoadingAddOn,
@@ -95,7 +94,6 @@ export default function EditAddOn() {
 
     const addOn = addOnResponse?.data;
 
-    // PUT /admin/add-ons/:id
     const {
         mutate: updateAddOn,
         isPending: isUpdating,
@@ -108,7 +106,6 @@ export default function EditAddOn() {
         },
     });
 
-    // Populate form
     useEffect(() => {
         if (!addOn) {
             return;
@@ -129,7 +126,6 @@ export default function EditAddOn() {
         setIsNewImage(false);
     }, [addOn, reset]);
 
-    // New image preview
     useEffect(() => {
         if (!(image instanceof File)) {
             return;
@@ -242,7 +238,7 @@ export default function EditAddOn() {
 
     return (
         <div className="mx-auto max-w-5xl space-y-6">
-            {/* Header */}
+
             <div className="flex items-center gap-4">
                 <Button
                     asChild
@@ -266,10 +262,9 @@ export default function EditAddOn() {
                 </div>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
                 <div className="overflow-hidden rounded-2xl border bg-background">
-                    {/* Form Header */}
+
                     <div className="border-b px-6 py-5">
                         <h3 className="font-semibold">
                             Add-on Information
@@ -280,9 +275,8 @@ export default function EditAddOn() {
                         </p>
                     </div>
 
-                    {/* Form Content */}
                     <div className="grid gap-8 p-6 lg:grid-cols-[1fr_1.15fr]">
-                        {/* Image */}
+
                         <div className="space-y-3">
                             <div>
                                 <Label>Add-on Image</Label>
@@ -372,9 +366,8 @@ export default function EditAddOn() {
                             )}
                         </div>
 
-                        {/* Details */}
                         <div className="flex flex-col space-y-6">
-                            {/* English Name */}
+
                             <div className="space-y-2">
                                 <Label htmlFor="nameEn">
                                     English Add-on Name
@@ -401,7 +394,6 @@ export default function EditAddOn() {
                                 </div>
                             </div>
 
-                            {/* Arabic Name */}
                             <div className="space-y-2">
                                 <Label htmlFor="nameAr">
                                     Arabic Add-on Name
@@ -429,7 +421,6 @@ export default function EditAddOn() {
                                 </div>
                             </div>
 
-                            {/* Price */}
                             <div className="space-y-2">
                                 <Label htmlFor="price">
                                     Price (KWD)
@@ -457,7 +448,6 @@ export default function EditAddOn() {
                                 </div>
                             </div>
 
-                            {/* Status */}
                             <div className="rounded-2xl border bg-muted/20 p-5">
                                 <div className="flex items-center justify-between gap-4">
                                     <div className="space-y-1">
@@ -484,7 +474,6 @@ export default function EditAddOn() {
                                 </div>
                             </div>
 
-                            {/* Information */}
                             <div className="rounded-2xl bg-primary/[0.04] p-5">
                                 <p className="text-sm font-semibold">
                                     Updating this add-on
@@ -510,7 +499,6 @@ export default function EditAddOn() {
                         </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex flex-col-reverse gap-3 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:justify-end">
                         <Button
                             asChild

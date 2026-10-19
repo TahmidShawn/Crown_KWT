@@ -99,7 +99,7 @@ const ProductFilters = ({
 
     return (
         <div>
-            {/* Header */}
+            
             <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                     <div className="flex size-8 items-center justify-center rounded-none rounded-tl-lg rounded-br-lg bg-secondary text-primary">
@@ -128,7 +128,7 @@ const ProductFilters = ({
                 </button>
             </div>
 
-            {/* Categories */}
+            
             <Collapsible defaultOpen>
                 <div className="border-t border-border py-5">
                     <CollapsibleTrigger className="group flex w-full items-center justify-between text-start outline-none">
@@ -186,7 +186,7 @@ const ProductFilters = ({
                 </div>
             </Collapsible>
 
-            {/* Price */}
+            
             <Collapsible defaultOpen>
                 <div className="border-t border-border py-5">
                     <CollapsibleTrigger className="group flex w-full items-center justify-between text-start outline-none">
@@ -232,7 +232,7 @@ const ProductFilters = ({
                 </div>
             </Collapsible>
 
-            {/* Size */}
+            
             <Collapsible defaultOpen>
                 <div className="border-t border-border py-5">
                     <CollapsibleTrigger className="group flex w-full items-center justify-between text-start outline-none">

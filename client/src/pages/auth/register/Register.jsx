@@ -38,8 +38,7 @@ const Register = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Carried from Login (originally from RequireAuth / add-to-cart) so
-    // Google register can send the user back where they came from.
+
     const returnTo = location.state?.from
         ? location.state.from.pathname + (location.state.from.search || "")
         : null;
@@ -100,7 +99,7 @@ const Register = () => {
             );
         },
         onError: () => {
-            console.error("Google Sign-In failed");
+            
         },
     });
 
@@ -110,8 +109,7 @@ const Register = () => {
                 navigate("/auth/verify-email", {
                     state: {
                         email: formData.email,
-                        // New accounts must verify first — remember where to
-                        // send them after that step completes.
+
                         from: location.state?.from,
                     },
                 });
@@ -185,12 +183,7 @@ const Register = () => {
                         </div>
 
                         <div className="space-y-4">
-                            {/*
-                             * Custom "Continue with Google" button that matches the
-                             * form inputs exactly. Clicking it opens Google's popup
-                             * via useGoogleLogin, so the whole button is clickable
-                             * (unlike Google's own iframe button).
-                             */}
+                            
                             <Button
                                 type="button"
                                 variant="outline"

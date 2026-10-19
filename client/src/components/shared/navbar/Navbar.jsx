@@ -56,8 +56,7 @@ const Navbar = () => {
 
     const queryClient = useQueryClient();
 
-    // Live cart item count for the navbar badge (customers only — admins
-    // don't shop, and the cart API is restricted to the "user" role).
+
     const { data: cartResponse } = useGet({
         url: "/cart",
         queryKey: ["cart"],
@@ -90,8 +89,7 @@ const Navbar = () => {
         };
     }, []);
 
-    // Mobile navigation lives in the bottom bar; the navbar only shows the
-    // "Track Order" shortcut as an icon on md+ screens.
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -109,7 +107,7 @@ const Navbar = () => {
         };
     }, []);
 
-    // Global "/" shortcut focuses the search box (ignored while typing).
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             const target = event.target;
@@ -159,7 +157,7 @@ const Navbar = () => {
             }`}
         >
             <div className="wrapper flex h-16 items-center gap-2 sm:h-17 sm:gap-4">
-                {/* Logo */}
+                
                 <Link
                     to="/"
                     aria-label="Crown Kwt home"
@@ -178,7 +176,7 @@ const Navbar = () => {
 
 
 
-                {/* Search */}
+                
                 <form
                     onSubmit={handleSearch}
                     className="mx-auto w-full min-w-0 max-w-xl"
@@ -206,7 +204,7 @@ const Navbar = () => {
                     </div>
                 </form>
 
-                {/* Track order - md+ icon only; mobile uses the bottom bar */}
+                
                 <Link to="/order-tracking" className="hidden shrink-0 md:block">
                     <Button
                         type="button"
@@ -224,10 +222,9 @@ const Navbar = () => {
                     </Button>
                 </Link>
 
-                {/* Actions */}
+                
                 <div className="flex shrink-0 items-center gap-1">
-                    {/* Cart — customers only (admins manage the shop, they don't
-                        shop, and the cart API is user-only) */}
+                    
                     {isCustomer && (
                         <Link to="/cart" className="relative">
                         <Button
@@ -254,7 +251,7 @@ const Navbar = () => {
                     </Link>
                     )}
 
-                    {/* User / Login */}
+                    
                     {isLoading ? null : isAuthenticated ? (
                         <Popover>
                             <PopoverTrigger asChild>
@@ -278,7 +275,7 @@ const Navbar = () => {
                                 sideOffset={10}
                                 className="w-56 rounded-2xl p-2"
                             >
-                                {/* Account Header */}
+                                
                                 <div className="flex items-center gap-3 rounded-xl bg-secondary/60 p-3">
                                     <div className="flex size-9 shrink-0 items-center justify-center rounded-tl-xl rounded-br-xl bg-primary text-primary-foreground">
                                         <User className="size-4" />
@@ -297,7 +294,7 @@ const Navbar = () => {
                                     </div>
                                 </div>
 
-                                {/* Account Options */}
+                                
                                 <div className="mt-2 space-y-1">
                                     <Link
                                         to={isAdmin ? "/admin" : "/dashboard"}
@@ -353,7 +350,7 @@ const Navbar = () => {
                         </Link>
                     )}
 
-                    {/* Language */}
+                    
                     <Button
                         type="button"
                         variant="outline-asymmetric"

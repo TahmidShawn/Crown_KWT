@@ -1,15 +1,6 @@
 import { Check } from "lucide-react";
 
-/*
- * Shared vertical tracking timeline used by the public tracking page, the
- * customer order details page and the admin order details page.
- *
- * Every step always renders its own status icon. Once a step has actually been
- * reached it is marked with a tick plus the orange "done" colour, so customers
- * can tell at a glance what already happened instead of having to infer it from
- * the current status alone. The step matching the live order status keeps a
- * highlighted ring, which answers "where is my order right now".
- */
+
 
 const COPY = {
     completed: { en: "Completed", ar: "مكتمل" },
@@ -18,12 +9,7 @@ const COPY = {
     cancelled: { en: "Cancelled", ar: "ملغي" },
 };
 
-/*
- * Colours use the site's semantic `primary` token (the same rust orange as the
- * navbar and buttons) rather than hard-coded Tailwind palette values. That keeps
- * the timeline on-brand and makes it adapt automatically in dark mode, where
- * `primary` is redefined to a lighter tint.
- */
+
 const markerClass = {
     cancelled: "border-destructive bg-destructive/10 text-destructive",
     done: "border-primary bg-primary text-primary-foreground",
@@ -59,12 +45,10 @@ const OrderTimeline = ({ steps, language = "en" }) => {
                 const isCancelled = step.key === "cancelled";
                 const isCurrent = Boolean(step.current);
 
-                // A step counts as done once the order has reached it, so the
-                // final step of a delivered order is marked complete too.
+
                 const isDone = Boolean(step.completed) || isCurrent;
 
-                // The last step is terminal when it is current (a delivered
-                // order) — there is nothing left in progress.
+
                 const isTerminal = isLast && isCurrent;
 
                 const state = isCancelled

@@ -10,10 +10,6 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
     const { language } = useLanguage();
     const isArabic = language === "ar";
 
-    /*
-     * Fetch the top 8 active cakes with the highest discount
-     * directly from the database via the public cakes endpoint.
-     */
     const {
         data: cakesResponse,
         isLoading,
@@ -33,7 +29,7 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
     } = useAddToCart();
 
     const handleAddToCart = (event, cake) => {
-        // The whole card is a link, so keep the "+" from navigating.
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -43,7 +39,7 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
     return (
         <section className="relative overflow-hidden bg-background py-16 md:py-20">
             <div className="wrapper">
-                {/* Section Header */}
+
                 <div className="mb-8 flex items-end justify-between gap-4 md:mb-10">
                     <div>
                         <div className="mb-3 inline-flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-4 py-2 text-xs font-semibold text-primary shadow-sm">
@@ -62,14 +58,12 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
 
                 </div>
 
-                {/* Loading */}
                 {isLoading && (
                     <div className="flex items-center justify-center py-20">
                         <Loader2 className="size-8 animate-spin text-primary" />
                     </div>
                 )}
 
-                {/* Error */}
                 {isError && (
                     <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-16 text-center">
                         <h2 className="text-lg font-bold text-foreground">
@@ -80,7 +74,6 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
                     </div>
                 )}
 
-                {/* Empty */}
                 {!isLoading && !isError && cakes.length === 0 && (
                     <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-16 text-center">
                         <h2 className="text-lg font-bold text-foreground">
@@ -95,7 +88,6 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
                     </div>
                 )}
 
-                {/* Product Grid */}
                 {!isLoading && !isError && cakes.length > 0 && (
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4 xl:gap-5">
                         {cakes.map((cake) => {
@@ -130,7 +122,6 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
                                             <div className="h-full w-full bg-secondary" />
                                         )}
 
-                                        {/* Discount Badge */}
                                         {hasDiscount && (
                                             <span
                                                 dir="ltr"
@@ -147,7 +138,6 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
                                             </span>
                                         )}
 
-                                        {/* Variant Badge */}
                                         {cake.weightSize && (
                                             <span className="absolute bottom-3 inset-e-3 rounded-none rounded-tl-xl rounded-br-xl border border-white/40 bg-background/90 px-2.5 py-1.5 text-[10px] font-bold text-foreground shadow-sm backdrop-blur-sm">
                                                 {cake.weightSize ===

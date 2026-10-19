@@ -131,7 +131,7 @@ const VerifyEmail = () => {
         <main className="min-h-screen bg-background">
             <div className="flex min-h-screen items-center justify-center px-5 py-12">
                 <section className="w-full max-w-md">
-                    {/* Header */}
+
                     <div className="mb-8">
                         <div className="mb-6 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                             <MailCheck className="size-6" />
@@ -159,13 +159,12 @@ const VerifyEmail = () => {
                         </p>
                     </div>
 
-                    {/* Form */}
                     <form
                         className="space-y-6"
                         onSubmit={handleSubmit(handleVerify)}
                         noValidate
                     >
-                        {/* Verification Code */}
+
                         <div className="space-y-3">
                             <label
                                 htmlFor="verification-code-0"
@@ -215,7 +214,6 @@ const VerifyEmail = () => {
                             )}
                         </div>
 
-                        {/* API Error */}
                         {verifyError && (
                             <p className="text-sm text-destructive">
                                 {verifyError?.response?.data?.message ||
@@ -223,7 +221,6 @@ const VerifyEmail = () => {
                             </p>
                         )}
 
-                        {/* Verify Button */}
                         <Button
                             type="submit"
                             variant="asymmetric"
@@ -241,7 +238,6 @@ const VerifyEmail = () => {
                         </Button>
                     </form>
 
-                    {/* Resend */}
                     <div className="mt-7 text-center text-sm text-muted-foreground">
                         <span>Didn't receive the code? </span>
 
@@ -262,7 +258,6 @@ const VerifyEmail = () => {
                         )}
                     </div>
 
-                    {/* Back to Registration */}
                     <div className="mt-6 flex justify-center">
                         <Link
                             to="/auth/register"

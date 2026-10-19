@@ -1,7 +1,3 @@
-/**
- * Official Google "G" logo (multi-color). Used by the custom
- * "Continue with Google" buttons on the Login and Register pages.
- */
 const GoogleIcon = ({ className }) => (
     <svg
         className={className}

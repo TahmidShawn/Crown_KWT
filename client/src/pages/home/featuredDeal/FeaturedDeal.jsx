@@ -8,7 +8,7 @@ const FeaturedDeal = () => {
     const { language } = useLanguage();
     const isArabic = language === "ar";
 
-    // The featured deal is the single highest-discounted active cake.
+
     const {
         data: response,
         isLoading,
@@ -32,7 +32,7 @@ const FeaturedDeal = () => {
         );
     }
 
-    // Hide the section entirely if there's nothing to feature.
+
     if (isError || !cake) {
         return null;
     }
@@ -50,7 +50,7 @@ const FeaturedDeal = () => {
             <div className="wrapper">
                 <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
                     <div className="flex flex-col md:flex-row">
-                        {/* Cake Image */}
+                        
                         <div className="relative aspect-[1.3/1] overflow-hidden md:aspect-auto md:h-125 md:w-[55%]">
                             {image ? (
                                 <img
@@ -65,7 +65,7 @@ const FeaturedDeal = () => {
 
                             <div className="absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-transparent" />
 
-                            {/* Discount */}
+                            
                             {discount > 0 && (
                                 <div className="absolute top-4 inset-s-4 flex size-20 flex-col items-center justify-center rounded-full bg-background shadow-lg md:top-5 md:inset-s-5 md:size-22">
                                     <span className="text-2xl font-black leading-none text-foreground">
@@ -79,7 +79,7 @@ const FeaturedDeal = () => {
                             )}
                         </div>
 
-                        {/* Content */}
+                        
                         <div className="flex flex-1 flex-col justify-center p-7 md:p-9 xl:p-10">
                             <div className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-primary">
                                 <Sparkles className="size-3.5" />
@@ -134,4 +134,3 @@ const FeaturedDeal = () => {
 };
 
 export default FeaturedDeal;
-

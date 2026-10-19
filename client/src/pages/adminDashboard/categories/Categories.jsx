@@ -90,7 +90,7 @@ export default function Categories() {
     return (
         <>
             <div className="space-y-8">
-                {/* Header */}
+                
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-2xl font-semibold tracking-tight">
@@ -113,7 +113,7 @@ export default function Categories() {
                     </Button>
                 </div>
 
-                {/* Search */}
+                
                 <div className="rounded-2xl border bg-background p-5">
                     <div className="relative max-w-md bg-white">
                         <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -127,7 +127,7 @@ export default function Categories() {
                     </div>
                 </div>
 
-                {/* Table */}
+                
                 <div className="overflow-hidden rounded-2xl border bg-white">
                     <div className="overflow-x-auto">
                         <Table>
@@ -186,7 +186,7 @@ export default function Categories() {
                                             key={category._id}
                                             className="hover:bg-muted/30"
                                         >
-                                            {/* Image */}
+                                            
                                             <TableCell className="px-5 py-4">
                                                 <div className="flex size-14 items-center justify-center overflow-hidden rounded-xl border bg-muted">
                                                     {category.imageUrl ? (
@@ -207,14 +207,14 @@ export default function Categories() {
                                                 </div>
                                             </TableCell>
 
-                                            {/* English */}
+                                            
                                             <TableCell className="px-5 py-4">
                                                 <span className="font-medium">
                                                     {category.name?.en || "—"}
                                                 </span>
                                             </TableCell>
 
-                                            {/* Arabic */}
+                                            
                                             <TableCell className="px-5 py-4">
                                                 <span
                                                     dir="rtl"
@@ -224,14 +224,14 @@ export default function Categories() {
                                                 </span>
                                             </TableCell>
 
-                                            {/* Slug */}
+                                            
                                             <TableCell className="px-5 py-4">
                                                 <span className="text-sm text-muted-foreground">
                                                     {category.slug || "—"}
                                                 </span>
                                             </TableCell>
 
-                                            {/* Status */}
+                                            
                                             <TableCell className="px-5 py-4">
                                                 <span
                                                     className={
@@ -246,7 +246,7 @@ export default function Categories() {
                                                 </span>
                                             </TableCell>
 
-                                            {/* Actions */}
+                                            
                                             <TableCell className="px-5 py-4">
                                                 <div className="flex justify-end gap-2">
                                                     <Link
@@ -285,7 +285,7 @@ export default function Categories() {
                     </div>
                 </div>
 
-                {/* Count */}
+                
                 {!isLoading && categories.length > 0 && (
                     <p className="text-sm text-muted-foreground">
                         Showing {filteredCategories.length} of{" "}
@@ -294,7 +294,7 @@ export default function Categories() {
                 )}
             </div>
 
-            {/* Delete Confirmation Modal */}
+            
             <AlertDialog
                 open={!!categoryToDelete}
                 onOpenChange={(open) => {

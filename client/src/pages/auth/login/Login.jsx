@@ -33,8 +33,6 @@ const Login = () => {
     const location = useLocation();
     const { refreshUser } = useAuth();
 
-    // Where RequireAuth (or add-to-cart) asked us to send the user after a
-    // successful login (deep-linked protected page). Falls back to home.
     const returnTo = location.state?.from
         ? location.state.from.pathname + (location.state.from.search || "")
         : null;
@@ -90,7 +88,7 @@ const Login = () => {
             );
         },
         onError: () => {
-            console.error("Google Sign-In failed");
+
         },
     });
 
@@ -109,10 +107,10 @@ const Login = () => {
     return (
         <main className="min-h-screen bg-background">
             <div className="flex min-h-screen">
-                {/* Left — Login Form */}
+
                 <section className="flex min-h-screen w-full items-center justify-center px-5 py-10 md:w-1/2 md:px-4 lg:px-6">
                     <div className="w-full max-w-lg">
-                        {/* Mobile Home */}
+
                         <div className="mb-8 md:hidden">
                             <Button
                                 asChild
@@ -132,7 +130,6 @@ const Login = () => {
                             </Button>
                         </div>
 
-                        {/* Heading */}
                         <div className="mb-7">
                             <p className="mb-2 text-sm font-semibold text-primary">
                                 Welcome back to Crown Kwt
@@ -148,14 +145,8 @@ const Login = () => {
                             </p>
                         </div>
 
-                        {/* Google Login */}
                         <div className="space-y-4">
-                            {/*
-                             * Custom "Continue with Google" button that matches the
-                             * form inputs exactly. Clicking it opens Google's popup
-                             * via useGoogleLogin, so the whole button is clickable
-                             * (unlike Google's own iframe button).
-                             */}
+
                             <Button
                                 type="button"
                                 variant="outline"
@@ -186,13 +177,12 @@ const Login = () => {
                             </div>
                         </div>
 
-                        {/* Form */}
                         <form
                             className="mt-5 space-y-5"
                             onSubmit={handleSubmit(handleLogin)}
                             noValidate
                         >
-                            {/* Email */}
+
                             <div className="space-y-2">
                                 <label
                                     htmlFor="email"
@@ -222,7 +212,6 @@ const Login = () => {
                                 )}
                             </div>
 
-                            {/* Password */}
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <label
@@ -283,7 +272,6 @@ const Login = () => {
                                 )}
                             </div>
 
-                            {/* API Error */}
                             {loginError && (
                                 <p className="text-sm text-destructive">
                                     {loginError?.response?.data?.message ||
@@ -291,7 +279,6 @@ const Login = () => {
                                 </p>
                             )}
 
-                            {/* Login */}
                             <Button
                                 type="submit"
                                 variant="asymmetric"
@@ -309,7 +296,6 @@ const Login = () => {
                             </Button>
                         </form>
 
-                        {/* Register */}
                         <p className="mt-6 text-center text-sm text-muted-foreground">
                             Don't have an account?{" "}
                             <Link
@@ -323,7 +309,6 @@ const Login = () => {
                     </div>
                 </section>
 
-                {/* Right — Cake Image */}
                 <section className="relative hidden min-h-screen w-1/2 overflow-hidden md:block">
                     <img
                         src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1600&auto=format&fit=crop&q=90"
@@ -333,7 +318,6 @@ const Login = () => {
 
                     <div className="absolute inset-0 bg-black/10" />
 
-                    {/* Back to Home */}
                     <div className="absolute left-6 top-6 z-10">
                         <Button
                             asChild

@@ -398,4 +398,3 @@ const FeaturedAddOn = ({ addOn, language, selected, quantity, onUpdated }) => {
 };
 
 export default ProductAddOns;
-

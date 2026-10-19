@@ -16,11 +16,7 @@ import {
 } from "@/utils/orderStatus";
 
 const OrderTracking = () => {
-    /*
-     * Admins arrive here from the orders table with ?orderNumber=..., so seed
-     * the form and the tracked order from the URL instead of showing an empty
-     * page and making them retype the number.
-     */
+
     const [searchParams] = useSearchParams();
     const initialNumber = searchParams.get("orderNumber")?.trim() ?? "";
 
@@ -104,14 +100,12 @@ const OrderTracking = () => {
                     </CardContent>
                 </Card>
 
-                {/* Loading */}
                 {isFetching && (
                     <div className="mt-8 flex items-center justify-center py-10">
                         <Loader2 className="size-7 animate-spin text-primary" />
                     </div>
                 )}
 
-                {/* Not found */}
                 {!isFetching && isError && trackedNumber && (
                     <Card className="mt-8 rounded-2xl border bg-background shadow-sm">
                         <CardContent className="flex flex-col items-center p-10 text-center">
@@ -130,7 +124,7 @@ const OrderTracking = () => {
                         </CardContent>
                     </Card>
                 )}
-                {/* Result */}
+
                 {!isFetching && !isError && order && (
                     <Card className="mt-8 rounded-2xl border bg-background shadow-sm">
                         <CardContent className="p-5 sm:p-6">
@@ -191,7 +185,6 @@ const OrderTracking = () => {
                         </CardContent>
                     </Card>
                 )}
-
 
             </div>
         </div>

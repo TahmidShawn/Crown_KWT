@@ -1,11 +1,8 @@
 import { Check, MapPin, Package, Truck, XCircle } from "lucide-react";
 
-/*
- * Shared helpers for rendering order status and the tracking timeline
- * consistently across the dashboard and the public tracking page.
- */
 
-// Real backend status flow (see ORDER_STATUSES in the order model)
+
+
 export const ORDER_FLOW = [
     "pending",
     "confirmed",
@@ -99,12 +96,7 @@ export const formatDateTime = (value, language = "en") => {
     );
 };
 
-/*
- * Build the vertical tracking timeline from a real order document.
- * A step is "completed" once the order has moved past it, "current" when it
- * matches the live status, and pending otherwise. Dates come from the
- * order's statusHistory so the timeline reflects what actually happened.
- */
+
 export const buildTrackingSteps = (order, language = "en") => {
     if (!order) return [];
 

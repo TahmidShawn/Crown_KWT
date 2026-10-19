@@ -13,7 +13,7 @@ const PaymentSuccess = () => {
 
     const orderId = searchParams.get("orderId");
 
-    // The cart was cleared on the server after payment, so refresh it
+
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["cart"] });
     }, [queryClient]);

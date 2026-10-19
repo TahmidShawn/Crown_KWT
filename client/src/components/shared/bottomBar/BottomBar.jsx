@@ -38,7 +38,7 @@ const BottomBar = () => {
         },
     });
 
-    // Real categories from the API (route is /category/:slug — singular)
+
     const { data: categoriesResponse } = useGet({
         url: "/categories",
         queryKey: ["categories"],
@@ -56,7 +56,7 @@ const BottomBar = () => {
     return (
         <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur-md md:hidden">
             <div className="flex h-16 items-center justify-around">
-                {/* Home */}
+                
                 <Link to="/" className={itemClass}>
                     <House className="size-5" />
 
@@ -65,7 +65,7 @@ const BottomBar = () => {
                     </span>
                 </Link>
 
-                {/* Categories */}
+                
                 <Popover>
                     <PopoverTrigger asChild>
                         <button type="button" className={itemClass}>
@@ -117,8 +117,7 @@ const BottomBar = () => {
                     </PopoverContent>
                 </Popover>
 
-                {/* Orders — customers go straight to their own orders,
-                    everyone else uses public tracking by order number */}
+                
                 <Link
                     to={isCustomer ? "/dashboard/orders" : "/order-tracking"}
                     className={itemClass}
@@ -129,7 +128,7 @@ const BottomBar = () => {
                         {isArabic ? "الطلبات" : "Orders"}
                     </span>
                 </Link>
-                {/* Account */}
+                
                 {isLoading ? (
                     <div className={itemClass}>
                         <User className="size-5" />
@@ -174,7 +173,7 @@ const BottomBar = () => {
                             </div>
 
                             <div className="mt-2 space-y-1">
-                                {/* Cart — customers only */}
+                                
                                 {isCustomer && (
                                     <Link to="/cart" className={linkClass}>
                                         <ShoppingBag className="size-4" />
@@ -229,4 +228,3 @@ const BottomBar = () => {
 };
 
 export default BottomBar;
-

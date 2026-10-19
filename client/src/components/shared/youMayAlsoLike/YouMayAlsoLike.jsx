@@ -5,20 +5,6 @@ import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
 import CakeCard from "@/components/shared/cakeCard/CakeCard";
 
-/*
- * Cross-sell strip for the bottom of /category/:slug (and /search).
- *
- * What normal e-commerce does on a listing page:
- *  - NEVER repeat the same category grid (it's already on screen).
- *  - Show picks from OTHER categories so the shopper keeps browsing
- *    instead of bouncing ("You may also like" / "Explore more").
- *  - Bias toward discounted cakes — they convert 2-3x better as impulse adds.
- *
- * The backend has no "exclude category" filter, so we over-fetch the
- * top-discounted cakes (limit 12) and drop anything from the current
- * category client-side, then show up to 8. Falls back to unfiltered
- * top-discounted cakes if the whole store is one category.
- */
 const YouMayAlsoLike = ({ excludeSlug = "", excludeIds = [] }) => {
     const { language } = useLanguage();
     const isArabic = language === "ar";
@@ -42,8 +28,6 @@ const YouMayAlsoLike = ({ excludeSlug = "", excludeIds = [] }) => {
         return !cats.some((c) => c?.slug === excludeSlug);
     });
 
-    // If every cake is in this category, show the top-discounted ones anyway
-    // (minus items already on screen) rather than an empty section.
     const visible = (filtered.length > 0 ? filtered : all.filter((c) => !excluded.has(c._id))).slice(0, 8);
 
     if (isLoading || visible.length === 0) return null;

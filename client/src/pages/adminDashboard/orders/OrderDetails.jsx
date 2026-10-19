@@ -416,7 +416,7 @@ const OrderDetails = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
+            
             <div>
                 <Button
                     asChild
@@ -448,14 +448,14 @@ const OrderDetails = () => {
                 </div>
             </div>
 
-            {/* Quick status actions */}
+            
             <OrderActionsCard
                 order={order}
                 isUpdating={isUpdatingStatus}
                 onAskStatus={setStatusConfirm}
             />
 
-            {/* Fulfillment progress */}
+            
             <Card className="rounded-2xl border bg-background shadow-none">
                 <CardHeader className="px-5 py-4 sm:px-6">
                     <CardTitle className="text-lg">
@@ -525,7 +525,7 @@ const OrderDetails = () => {
             </Card>
 
 
-            {/* Customer & payment */}
+            
             <div className="grid gap-6 lg:grid-cols-2">
                 <Card className="rounded-2xl border bg-background shadow-none">
                     <CardHeader className="px-5 py-4 sm:px-6">
@@ -673,10 +673,10 @@ const OrderDetails = () => {
             </div>
 
 
-            {/* Status timeline */}
+            
             <StatusTimeline order={order} />
 
-            {/* Items */}
+            
             <Card className="rounded-2xl border bg-background shadow-none">
                 <CardHeader className="px-5 py-4 sm:px-6">
                     <CardTitle className="flex items-center gap-2 text-lg">
@@ -765,14 +765,14 @@ const OrderDetails = () => {
                 </CardContent>
             </Card>
 
-            {/* Admin notes */}
+            
             <AdminNotesCard
                 order={order}
                 orderId={orderId}
                 onSaved={invalidateOrderQueries}
             />
 
-            {/* Status update confirmation modal */}
+            
             <AlertDialog
                 open={Boolean(statusConfirm)}
                 onOpenChange={(open) => {

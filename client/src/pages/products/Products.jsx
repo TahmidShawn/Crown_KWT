@@ -42,21 +42,10 @@ const Products = () => {
 
     const isArabic = language === "ar";
 
-    // Search term comes from the URL when on the category/product/search routes.
     const search = searchParams
         .get("query")
         ?.trim() || searchParams.get("search")?.trim() || "";
 
-    /*
-     * The category comes from the URL:
-     *
-     * /category/birtday  ->  slug = "birtday"
-     *
-     * With no slug (/search or /search?query=...), we browse all
-     * active cakes and optionally filter by the search term.
-     *
-     * Price and size remain local filter state.
-     */
     const params = {
         ...(slug && { category: slug }),
         ...(search && { search }),
@@ -91,7 +80,7 @@ const Products = () => {
     } = useAddToCart();
 
     const handleAddToCart = (event, cake) => {
-        // The whole card is a link, so keep the "+" from navigating.
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -174,7 +163,7 @@ const Products = () => {
 
     return (
         <main className="bg-background pb-16 md:pb-0">
-            {/* Page header */}
+
             <section className="border-b border-border bg-secondary/30 pt-28 pb-8 md:pt-32 md:pb-10">
                 <div className="wrapper">
                     <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-primary">
@@ -200,7 +189,6 @@ const Products = () => {
                             </p>
                         </div>
 
-                        {/* Mobile filters */}
                         <Sheet
                             open={mobileFiltersOpen}
                             onOpenChange={setMobileFiltersOpen}
@@ -247,11 +235,10 @@ const Products = () => {
                 </div>
             </section>
 
-            {/* Product section */}
             <section className="py-8 md:py-10">
                 <div className="wrapper">
                     <div className="flex items-start gap-8">
-                        {/* Desktop filters */}
+
                         <aside className="hidden w-60 shrink-0 md:block xl:w-64">
                             <div className="sticky top-24 rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card p-5 shadow-sm">
                                 <ProductFilters
@@ -261,9 +248,8 @@ const Products = () => {
                             </div>
                         </aside>
 
-                        {/* Products */}
                         <div className="min-w-0 flex-1">
-                            {/* Toolbar */}
+
                             <div className="mb-4 flex items-center justify-between gap-4">
                                 <p className="text-sm text-muted-foreground">
                                     <span className="font-bold text-foreground">
@@ -310,7 +296,6 @@ const Products = () => {
                                 </div>
                             </div>
 
-                            {/* Selected filters */}
                             {selectedFilters.length > 0 && (
                                 <div className="mb-6 flex flex-wrap items-center gap-2">
                                     <span className="me-1 text-xs font-semibold text-muted-foreground">
@@ -347,14 +332,12 @@ const Products = () => {
                                 </div>
                             )}
 
-                            {/* Loading */}
                             {isLoading && (
                                 <div className="flex min-h-80 items-center justify-center">
                                     <Loader2 className="size-7 animate-spin text-primary" />
                                 </div>
                             )}
 
-                            {/* Error */}
                             {!isLoading && isError && (
                                 <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-16 text-center">
                                     <h2 className="text-lg font-bold text-foreground">
@@ -371,7 +354,6 @@ const Products = () => {
                                 </div>
                             )}
 
-                            {/* Product grid */}
                             {!isLoading && !isError && cakes.length > 0 && (
                                 <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4 xl:gap-5">
                                     {cakes.map((cake) => {
@@ -508,7 +490,6 @@ const Products = () => {
                                 </div>
                             )}
 
-                            {/* Empty */}
                             {!isLoading && !isError && cakes.length === 0 && (
                                 <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-16 text-center">
                                     <h2 className="text-lg font-bold text-foreground">
@@ -533,8 +514,6 @@ const Products = () => {
                 </div>
             </section>
 
-            {/* Suggested cakes — fetches its own top-discounted cakes, so it
-            renders on every category page even when this category is empty */}
             <HotDeals
                 eyebrow={isArabic ? "اقتراحات لك" : "Suggested for you"}
                 title={isArabic ? "كعكات قد تعجبك" : "Suggested cakes"}

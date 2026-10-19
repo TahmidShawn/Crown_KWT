@@ -1,4 +1,3 @@
-
 import { ArrowUp, Mail } from "lucide-react";
 import { Link } from "react-router";
 
@@ -35,15 +34,15 @@ const Footer = () => {
 
     return (
         <footer className="relative overflow-hidden border-t border-border bg-gradient-to-b from-secondary/40 via-secondary/20 to-background">
-            {/* Decorative glow */}
+            
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -top-24 start-1/4 size-72 rounded-full bg-primary/10 blur-3xl"
             />
             <div className="wrapper relative">
-                {/* Main Footer */}
+                
                 <div className="grid gap-10 py-12 sm:grid-cols-2 md:py-14 lg:grid-cols-4">
-                    {/* Brand */}
+                    
                     <div>
                         <Link to="/" className="inline-flex items-center gap-2.5">
                             <img
@@ -71,7 +70,7 @@ const Footer = () => {
                         </p>
                     </div>
 
-                    {/* Shop */}
+                    
                     <nav>
                         <h3 className={headingClass}>
                             {isArabic ? "تسوق" : "Shop"}
@@ -89,7 +88,7 @@ const Footer = () => {
                         </ul>
                     </nav>
 
-                    {/* Account */}
+                    
                     <nav>
                         <h3 className={headingClass}>
                             {isArabic ? "حسابي" : "My account"}
@@ -107,7 +106,7 @@ const Footer = () => {
                         </ul>
                     </nav>
 
-                    {/* Contact */}
+                    
                     <div className="lg:justify-self-end">
                         <h3 className={headingClass}>
                             {isArabic ? "تواصل معنا" : "Get in touch"}
@@ -169,7 +168,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
+                
                 <div className="flex flex-col gap-3 border-t border-border py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
                     <p>
                         © {new Date().getFullYear()} Crown Kwt.{" "}

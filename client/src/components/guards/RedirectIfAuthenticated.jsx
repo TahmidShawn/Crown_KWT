@@ -22,8 +22,7 @@ const RedirectIfAuthenticated = ({ children }) => {
     if (isAuthenticated) {
         const from = location.state?.from?.pathname;
 
-        // Only honour the return path if it doesn't point back into an auth
-        // page (avoids a redirect loop).
+
         if (from && !from.startsWith("/auth")) {
             return <Navigate to={from} replace />;
         }

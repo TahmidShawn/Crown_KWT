@@ -83,7 +83,7 @@ function SidebarContent({ onNavigate }) {
 
     return (
         <div className="flex h-full flex-col">
-            {/* Logo */}
+            
             <div className="flex h-20 items-center justify-start border-b px-5">
                 <NavLink
                     to="/"
@@ -106,10 +106,10 @@ function SidebarContent({ onNavigate }) {
                 </NavLink>
             </div>
 
-            {/* Navigation */}
+            
             <div className="flex-1 overflow-y-auto px-3 py-5">
                 <div className="space-y-2">
-                    {/* Dashboard */}
+                    
                     <NavLink
                         to="/admin"
                         onClick={onNavigate}
@@ -127,7 +127,7 @@ function SidebarContent({ onNavigate }) {
                         <span className="text-sm font-medium">Dashboard</span>
                     </NavLink>
 
-                    {/* Dropdown Groups */}
+                    
                     {navigationGroups.map((group) => {
                         const Icon = group.icon;
                         const active = isGroupActive(group.items);
@@ -179,7 +179,7 @@ function SidebarContent({ onNavigate }) {
                         );
                     })}
 
-                    {/* Simple Navigation */}
+                    
                     <div className="pt-2">
                         {simpleNavigation.map((item) => {
                             const Icon = item.icon;
@@ -210,7 +210,7 @@ function SidebarContent({ onNavigate }) {
                 </div>
             </div>
 
-            {/* Bottom */}
+            
             <div className="border-t p-3">
                 <div className="rounded-xl bg-muted/60 p-3">
                     <p className="text-xs font-medium">Crown Kwt Admin</p>
@@ -230,22 +230,22 @@ export default function AdminDashboardLayout() {
     return (
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <div className="min-h-screen bg-muted/30">
-                {/* Desktop Sidebar — always expanded; there is no collapse toggle */}
+                
                 <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r bg-background lg:block">
                     <SidebarContent />
                 </aside>
 
-                {/* Mobile Sidebar — content belongs to the same Sheet root as the trigger below */}
+                
                 <SheetContent side="left" className="w-72 p-0">
                     <SidebarContent onNavigate={() => setMobileOpen(false)} />
                 </SheetContent>
 
-                {/* Main */}
+                
                 <div className="min-h-screen lg:pl-64">
-                    {/* Header */}
+                    
                     <header className="sticky top-0 z-30 flex h-20 items-center border-b bg-background/95 px-4 backdrop-blur md:px-6">
                         <div className="flex items-center gap-3">
-                            {/* Mobile Menu */}
+                            
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -281,7 +281,7 @@ export default function AdminDashboardLayout() {
                     </div>
                 </header>
 
-                {/* Page Content */}
+                
                 <main className="p-4 md:p-6">
                     <Outlet />
                 </main>

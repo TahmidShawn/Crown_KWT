@@ -148,11 +148,7 @@ const Actions = ({ order, onStatusAction, onCancelOrder }) => {
             onClick={(event) => event.stopPropagation()}
         >
             <DropdownMenu>
-                {/*
-                 * Base UI composes through `render`, not Radix's `asChild`.
-                 * The wrapper below bridges the two so the trigger is a single
-                 * <button> instead of an invalid nested pair.
-                 */}
+                
                 <DropdownMenuTrigger
                     render={
                         <Button
@@ -386,7 +382,7 @@ const OrdersList = () => {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
+            
             <div>
                 <h1 className="text-2xl font-semibold tracking-tight">
                     Orders
@@ -397,7 +393,7 @@ const OrdersList = () => {
                 </p>
             </div>
 
-            {/* Stats */}
+            
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {STATS.map((stat) => {
                     const Icon = stat.icon;
@@ -429,7 +425,7 @@ const OrdersList = () => {
                 })}
             </div>
 
-            {/* Search + sort */}
+            
             <div className="flex flex-col gap-3 rounded-2xl border bg-background p-5 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -457,7 +453,7 @@ const OrdersList = () => {
                 </Select>
             </div>
 
-            {/* Status filter tabs */}
+            
             <div className="flex flex-wrap gap-2">
                 {STATUS_TABS.map((tab) => (
                     <NavLink
@@ -488,7 +484,7 @@ const OrdersList = () => {
             </div>
 
 
-            {/* Table */}
+            
             {visibleOrders.length === 0 ? (
                 <div className="rounded-2xl border bg-background p-10 text-center">
                     <h2 className="text-lg font-bold text-foreground">
@@ -633,7 +629,7 @@ const OrdersList = () => {
             )}
 
 
-            {/* Status update confirmation modal */}
+            
             <AlertDialog
                 open={Boolean(statusAction)}
                 onOpenChange={(open) => {

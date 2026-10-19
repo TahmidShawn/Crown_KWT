@@ -28,7 +28,7 @@ const ProductGallery = ({ product }) => {
 
     return (
         <div className="flex flex-col gap-3 md:flex-row">
-            {/* Thumbnails */}
+            
             <div className="order-2 flex gap-3 overflow-x-auto md:order-1 md:w-20 md:flex-col md:overflow-visible">
                 {images.map((image, index) => (
                     <button
@@ -50,7 +50,7 @@ const ProductGallery = ({ product }) => {
                 ))}
             </div>
 
-            {/* Main Image */}
+            
             <div className="relative order-1 min-w-0 flex-1 md:order-2">
                 <div className="relative aspect-square overflow-hidden rounded-none rounded-tl-3xl rounded-br-3xl bg-secondary">
                     <img

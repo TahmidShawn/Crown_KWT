@@ -1,5 +1,3 @@
-
-
 export const STATUS_LABELS = {
     pending: "Pending",
     confirmed: "Confirmed",
@@ -40,8 +38,7 @@ export const getNextStatuses = (order) => {
 
     if (isFinal) return [];
 
-    // Option A: unpaid online orders show no forward actions.
-    // They stay visible as pending with a payment hint until paid.
+
     if (isAwaitingOnlinePayment(order)) {
         return [];
     }

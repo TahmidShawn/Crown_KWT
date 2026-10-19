@@ -162,7 +162,7 @@ const ProductDetails = () => {
 
     return (
         <main className="bg-background pb-16 md:pb-0">
-            {/* Breadcrumb */}
+            
             <section className="pt-24 md:pt-28">
                 <div className="wrapper">
                     <div className="flex min-h-12 items-center rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-secondary/40 px-4">
@@ -191,7 +191,7 @@ const ProductDetails = () => {
                 </div>
             </section>
 
-            {/* Product Hero */}
+            
             <section className="py-8 md:py-12 xl:py-14">
                 <div className="wrapper">
                     <div className="flex flex-col gap-8 md:gap-10 xl:flex-row xl:items-start xl:gap-14">
@@ -200,7 +200,7 @@ const ProductDetails = () => {
                         </div>
 
                         <div className="xl:w-[46%]">
-                            {/* Category */}
+                            
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
                                     {product.category.name[language]}
@@ -213,12 +213,12 @@ const ProductDetails = () => {
                                 )}
                             </div>
 
-                            {/* Title */}
+                            
                             <h1 className="mt-3 text-3xl font-black tracking-[-0.04em] text-foreground md:text-4xl xl:text-5xl">
                                 {product.name[language]}
                             </h1>
 
-                            {/* Rating */}
+                            
                             <div className="mt-4 flex flex-wrap items-center gap-3">
                                 <div className="flex items-center gap-1.5">
                                     <Star className="size-4 fill-primary text-primary" />
@@ -252,12 +252,12 @@ const ProductDetails = () => {
                                 </span>
                             </div>
 
-                            {/* Description Preview */}
+                            
                             <p className="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
                                 {product.description[language]}
                             </p>
 
-                            {/* Price */}
+                            
                             <div className="mt-6 flex flex-wrap items-end gap-3 border-y border-border py-5">
                                 <span
                                     dir="ltr"
@@ -284,7 +284,7 @@ const ProductDetails = () => {
                                 )}
                             </div>
 
-                            {/* Attributes */}
+                            
                             <div className="grid grid-cols-2 gap-3 py-5 md:grid-cols-3">
                                 <ProductAttribute
                                     icon={PackageCheck}
@@ -306,7 +306,7 @@ const ProductDetails = () => {
                                 />
                             </div>
 
-                            {/* Quantity */}
+                            
                             <div className="mt-2 border-t border-border pt-6">
                                 <div className="flex items-center justify-between gap-4">
                                     <div>
@@ -399,13 +399,13 @@ const ProductDetails = () => {
                 </div>
             </section>
 
-            {/* Add-ons */}
+            
             <ProductAddOns />
 
-            {/* Description / Reviews */}
+            
             <section className="border-t border-border py-10 md:py-14">
                 <div className="wrapper">
-                    {/* Tabs */}
+                    
                     <div className="flex border-b border-border">
                         <button
                             type="button"
@@ -442,7 +442,7 @@ const ProductDetails = () => {
                         </button>
                     </div>
 
-                    {/* Tab Content */}
+                    
                     <div className="pt-8">
                         {activeTab === "description" ? (
                             <div className="max-w-3xl">

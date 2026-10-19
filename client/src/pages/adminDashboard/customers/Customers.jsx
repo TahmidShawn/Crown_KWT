@@ -85,10 +85,7 @@ const CustomerActions = ({ customer }) => {
             onClick={(event) => event.stopPropagation()}
         >
             <DropdownMenu>
-                {/*
-                 * Base UI composes through `render`, not Radix's `asChild`,
-                 * so the trigger stays a single <button>.
-                 */}
+                
                 <DropdownMenuTrigger
                     render={
                         <Button
@@ -183,8 +180,7 @@ export default function Customers() {
     const customers = useMemo(() => data?.data ?? [], [data]);
 
     const stats = useMemo(() => {
-        // Staff accounts often place test orders, so "Shoppers" counts real
-        // customers only, while revenue covers every order in the store.
+
         const shoppers = customers.filter((c) => !c.isStaff);
         const withOrders = shoppers.filter((c) => c.totalOrders > 0).length;
         const repeat = shoppers.filter((c) => c.totalOrders > 1).length;
@@ -277,7 +273,7 @@ export default function Customers() {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
+            
             <div>
                 <h1 className="text-2xl font-semibold tracking-tight">
                     Customers
@@ -288,7 +284,7 @@ export default function Customers() {
                 </p>
             </div>
 
-            {/* Stats */}
+            
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-2xl border bg-background p-5">
                     <div className="flex items-center justify-between">
@@ -355,7 +351,7 @@ export default function Customers() {
                 </div>
             </div>
 
-            {/* Search + sort */}
+            
             <div className="flex flex-col gap-3 rounded-2xl border bg-background p-5 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -386,7 +382,7 @@ export default function Customers() {
                 </Select>
             </div>
 
-            {/* Table */}
+            
             {visibleCustomers.length === 0 ? (
                 <div className="rounded-2xl border bg-background p-10 text-center">
                     <h2 className="text-lg font-bold text-foreground">

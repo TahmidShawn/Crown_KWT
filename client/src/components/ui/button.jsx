@@ -68,13 +68,7 @@ function Button({
     children,
     ...props
 }) {
-    /*
-     * Base UI composes elements through its `render` prop (there is no
-     * `asChild`). When `asChild` is set, the single child (e.g. a react-router
-     * <Link>) replaces the <button> entirely, so we never end up with an
-     * <a> nested inside a <button>. Class names from both sides are merged
-     * by Base UI, so variant styles always apply.
-     */
+    
     const composed = asChild && isValidElement(children);
 
     return (

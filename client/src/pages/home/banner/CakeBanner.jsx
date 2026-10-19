@@ -48,7 +48,7 @@ const CakeBanner = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const { t } = useLanguage();
 
-    // First category — both CTA buttons land on its page.
+
     const { data: categoriesResponse } = useGet({
         url: "/categories",
         queryKey: ["categories"],
@@ -73,15 +73,15 @@ const CakeBanner = () => {
     return (
         <section className="relative overflow-hidden bg-background pb-14 pt-24">
             <div className="wrapper flex flex-col items-center gap-10 md:flex-row md:gap-12 lg:gap-16">
-                {/* Content */}
+                
                 <div className="relative z-10 w-full max-w-xl md:w-[46%]">
-                    {/* Eyebrow */}
+                    
                     <div className="mb-4 inline-flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-4 py-2 text-xs font-semibold text-primary ">
                         <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                         {t.banner.eyebrow}
                     </div>
 
-                    {/* Heading */}
+                    
                     <h1 className="text-[2.15rem] leading-[1.06] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-[3.45rem]">
                         {t.banner.title}
 
@@ -97,7 +97,7 @@ const CakeBanner = () => {
                         </span>
                     </h1>
 
-                    {/* Description */}
+                    
                     <p className="mt-5 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base md:mt-6 md:text-lg md:leading-8">
                         {t.banner.descriptionStart}{" "}
                         <strong className="font-semibold text-foreground">
@@ -110,7 +110,7 @@ const CakeBanner = () => {
                         {t.banner.descriptionEnd}
                     </p>
 
-                    {/* Buttons */}
+                    
                     <div className="mt-6 flex flex-wrap gap-3 sm:mt-7">
                         <Button
                             asChild
@@ -135,7 +135,7 @@ const CakeBanner = () => {
                         </Button>
                     </div>
 
-                    {/* Stats */}
+                    
                     <div className="mt-8 flex items-center gap-5 text-xs text-muted-foreground sm:gap-7 sm:text-sm">
                         <div>
                             <p className="text-xl font-semibold text-foreground sm:text-2xl">
@@ -169,9 +169,9 @@ const CakeBanner = () => {
                     </div>
                 </div>
 
-                {/* Visual */}
+                
                 <div className="relative w-full max-w-lg md:w-[54%] md:max-w-none">
-                    {/* Main image */}
+                    
                     <div className="relative aspect-5/4 w-full overflow-hidden   bg-secondary shadow-xl rounded-tl-[100px] rounded-br-[100px]">
                         {cakes.map((cake, index) => (
                             <img
@@ -188,7 +188,7 @@ const CakeBanner = () => {
 
                         <div className="absolute inset-0 bg-linear-to-t from-foreground/20 via-transparent to-transparent" />
 
-                        {/* Rating */}
+                        
                         <div className="absolute inset-e-3 top-5 z-20 flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-3.5 py-2.5 shadow-lg sm:inset-e-5 sm:top-7">
                             <span className="text-sm tracking-wide text-primary">
                                 ★★★★★
@@ -200,7 +200,7 @@ const CakeBanner = () => {
                         </div>
                     </div>
 
-                    {/* Order card */}
+                    
                     <div className="absolute -bottom-4 inset-s-3 z-20 flex items-center gap-2.5 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-3 py-2.5 shadow-lg sm:bottom-5 sm:inset-s-5 sm:px-4 sm:py-3 md:-inset-s-6">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
                             <Cake className="h-4 w-4 text-primary" />

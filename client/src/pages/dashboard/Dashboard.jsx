@@ -37,7 +37,7 @@ const Dashboard = () => {
 
     const orders = ordersResponse?.data ?? [];
 
-    // Real statistics derived from the fetched orders.
+
     const processing = orders.filter(
         (order) =>
             order.orderStatus === "pending" ||
@@ -79,14 +79,14 @@ const Dashboard = () => {
         },
     ];
 
-    // Latest orders first (the endpoint already sorts by createdAt desc).
+
     const recentOrders = orders.slice(0, 4);
 
     const isLoading = authLoading || ordersLoading;
 
     return (
         <div className="p-5 sm:p-7 lg:p-9">
-            {/* Header */}
+            
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <p className="mb-2 text-sm font-semibold text-primary">
@@ -110,14 +110,14 @@ const Dashboard = () => {
                 </Button>
             </div>
 
-            {/* Loading */}
+            
             {isLoading && (
                 <div className="flex min-h-60 items-center justify-center">
                     <Loader2 className="size-7 animate-spin text-primary" />
                 </div>
             )}
 
-            {/* Error */}
+            
             {!isLoading && isError && (
                 <div className="rounded-2xl border bg-background px-6 py-14 text-center">
                     <h3 className="text-base font-bold">
@@ -131,7 +131,7 @@ const Dashboard = () => {
                 </div>
             )}
 
-            {/* Guests see a login prompt instead of empty stats */}
+            
             {!isLoading && !isError && !isAuthenticated && (
                 <div className="rounded-2xl border bg-background px-6 py-14 text-center">
                     <h3 className="text-base font-bold">Please log in</h3>
@@ -148,7 +148,7 @@ const Dashboard = () => {
 
             {!isLoading && !isError && isAuthenticated && (
                 <>
-                    {/* Statistics */}
+                    
                     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         {statistics.map((item) => {
                             const Icon = item.icon;
@@ -184,7 +184,7 @@ const Dashboard = () => {
                         })}
                     </div>
 
-                    {/* Recent Orders */}
+                    
                     <Card className="mt-6 rounded-2xl border bg-background shadow-none">
                         <CardHeader className="flex flex-col gap-3 border-b px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                             <div>

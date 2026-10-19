@@ -207,7 +207,7 @@ export default function AddCategory() {
 
     return (
         <div className="mx-auto w-full max-w-7xl space-y-6 pb-10">
-            {/* Header */}
+            
             <div className="flex items-center gap-4">
                 <Button
                     asChild
@@ -233,7 +233,7 @@ export default function AddCategory() {
 
             <form onSubmit={handleSubmit(handleCreateCategory)} noValidate>
                 <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
-                    {/* Main Form */}
+                    
                     <div className="space-y-6">
                         <section className="rounded-2xl border bg-card">
                             <div className="border-b p-6">
@@ -247,7 +247,7 @@ export default function AddCategory() {
                             </div>
 
                             <div className="space-y-6 p-6">
-                                {/* Category Image */}
+                                
                                 <div className="space-y-2">
                                     <Label htmlFor="image">
                                         Category Image
@@ -318,7 +318,7 @@ export default function AddCategory() {
                                     )}
                                 </div>
 
-                                {/* Names */}
+                                
                                 <div className="grid gap-6 md:grid-cols-2">
                                     <div className="space-y-2">
                                         <Label htmlFor="nameEn">
@@ -366,7 +366,7 @@ export default function AddCategory() {
                                     </div>
                                 </div>
 
-                                {/* Active Status */}
+                                
                                 <div className="flex items-center justify-between rounded-2xl border p-4">
                                     <div>
                                         <Label
@@ -395,7 +395,7 @@ export default function AddCategory() {
                             </div>
                         </section>
 
-                        {/* Actions */}
+                        
                         <div className="flex items-center justify-end gap-3">
                             <Button
                                 type="button"
@@ -425,7 +425,7 @@ export default function AddCategory() {
                         </div>
                     </div>
 
-                    {/* Translation Information */}
+                    
                     <div className="h-fit rounded-2xl border bg-card">
                         <div className="border-b p-6">
                             <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">

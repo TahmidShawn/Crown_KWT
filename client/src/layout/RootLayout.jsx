@@ -11,7 +11,7 @@ const RootLayout = () => {
                 <Outlet />
             </main>
             <Footer />
-            {/* Mobile bottom bar is fixed; pad the footer so it isn't covered (incl. iOS safe area) */}
+            
             <div
                 className="h-[calc(4rem+env(safe-area-inset-bottom))] md:hidden"
                 aria-hidden="true"

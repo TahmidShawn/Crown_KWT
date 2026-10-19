@@ -3,10 +3,6 @@ import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
 
-/*
- * Shared cake card — same look as the category grid / hot-deals cards.
- * Handles both category shapes returned by the API (object or array).
- */
 const CakeCard = ({
     cake,
     language = "en",

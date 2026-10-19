@@ -43,7 +43,7 @@ const governorates = [
     "Jahra",
 ];
 
-// Keep these in sync with the backend validation schema
+
 const FIELD_LIMITS = {
     fullNameMin: 4,
     fullName: 30,
@@ -58,10 +58,7 @@ const FIELD_LIMITS = {
 
 const formatPrice = (price) => `${Number(price).toFixed(3)} KWD`;
 
-/*
- * Extracts the (up to) 8 local digits from whatever the user typed or pasted:
- * "+965 9123 4567", "00965 91234567", "965-9123-4567", "9123 4567" ...
- */
+
 const extractKuwaitLocalNumber = (phone = "") => {
     let digits = String(phone).replace(/\D/g, "");
 
@@ -74,7 +71,7 @@ const extractKuwaitLocalNumber = (phone = "") => {
     return digits.slice(0, 8);
 };
 
-// Final format sent to the backend: +965XXXXXXXX
+
 const normalizeKuwaitPhone = (phone = "") => {
     const local = extractKuwaitLocalNumber(phone);
 
@@ -85,7 +82,7 @@ const isValidKuwaitPhone = (phone = "") => {
     return /^[2-9]\d{7}$/.test(extractKuwaitLocalNumber(phone));
 };
 
-// Pretty display: +965 9123 4567
+
 const formatKuwaitPhoneForDisplay = (phone = "") => {
     const local = extractKuwaitLocalNumber(phone);
 
@@ -228,8 +225,7 @@ const Checkout = () => {
 
     const totalPrice = subtotal + deliveryFee;
 
-    // MyFatoorah rejects zero-amount invoices — smallest chargeable
-    // KWD unit is 0.100. Warn before creating an unpaid online order.
+
     const MIN_ONLINE_TOTAL = 0.1;
 
     const updateAddress = (field, value) => {
@@ -244,7 +240,7 @@ const Checkout = () => {
             savedAddress
                 ? {
                       ...savedAddress,
-                      // Show only the 8 local digits inside the modal
+
                       phone: extractKuwaitLocalNumber(savedAddress.phone),
                   }
                 : {

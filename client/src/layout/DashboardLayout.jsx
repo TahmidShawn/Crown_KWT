@@ -120,7 +120,7 @@ const DashboardLayout = () => {
         },
     });
 
-    // Refresh the time-of-day greeting every minute.
+
     useEffect(() => {
         const interval = setInterval(() => {
             setGreeting(getGreeting(new Date().getHours()));
@@ -170,7 +170,7 @@ const DashboardLayout = () => {
                         })}
                     </nav>
 
-                    {/* Always-visible footer: user card + logout (bottom-left) */}
+                    
                     <div className="shrink-0 border-t border-border p-4">
                         <div className="mb-3 flex items-center gap-3 px-2">
                             <div className="flex size-9 shrink-0 items-center justify-center rounded-none rounded-tl-xl rounded-br-xl bg-primary text-sm font-bold text-primary-foreground">
@@ -201,7 +201,7 @@ const DashboardLayout = () => {
                     </div>
                 </aside>
 
-                {/* Main Area */}
+                
                 <div className="flex min-w-0 flex-1 flex-col">
                     <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur-md sm:gap-4 sm:px-6">
                         <Sheet open={open} onOpenChange={setOpen}>
@@ -263,7 +263,7 @@ const DashboardLayout = () => {
                                     })}
                                 </nav>
 
-                                {/* Pinned at the bottom of the sheet */}
+                                
                                 <div className="shrink-0 border-t border-border p-4">
                                     <div className="mb-3 flex items-center gap-3 px-2">
                                         <div className="flex size-9 shrink-0 items-center justify-center rounded-none rounded-tl-xl rounded-br-xl bg-primary text-sm font-bold text-primary-foreground">
@@ -297,7 +297,7 @@ const DashboardLayout = () => {
                             </SheetContent>
                         </Sheet>
 
-                        {/* Hello + greeting */}
+                        
                         <div className="min-w-0 flex-1">
                             <p className="text-[11px] font-medium text-muted-foreground sm:text-xs">
                                 {greeting}
@@ -308,7 +308,7 @@ const DashboardLayout = () => {
                             </h1>
                         </div>
 
-                        {/* Live time section */}
+                        
                         <LiveClock />
                     </header>
 

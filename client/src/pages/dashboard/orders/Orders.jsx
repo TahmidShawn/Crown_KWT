@@ -49,14 +49,14 @@ const Orders = () => {
                 </p>
             </div>
 
-            {/* Loading */}
+            
             {isLoading && (
                 <div className="flex min-h-60 items-center justify-center">
                     <Loader2 className="size-7 animate-spin text-primary" />
                 </div>
             )}
 
-            {/* Error */}
+            
             {isError && (
                 <Card className="rounded-2xl border bg-background shadow-none">
                     <CardContent className="p-10 text-center">
@@ -75,7 +75,7 @@ const Orders = () => {
                 </Card>
             )}
 
-            {/* Empty */}
+            
             {!isLoading && !isError && orders.length === 0 && (
                 <Card className="rounded-2xl border bg-background shadow-none">
                     <CardContent className="flex flex-col items-center p-10 text-center">
@@ -101,7 +101,7 @@ const Orders = () => {
                     </CardContent>
                 </Card>
             )}
-            {/* Orders */}
+            
             {!isLoading && !isError && orders.length > 0 && (
                 <div className="space-y-4">
                     {orders.map((order) => {

@@ -22,7 +22,7 @@ const Category = () => {
     return (
         <section className="relative overflow-hidden bg-secondary/30 py-16 sm:py-20">
             <div className="wrapper">
-                {/* Section Header */}
+                
                 <div className="mb-8 flex items-end justify-between gap-4 md:mb-10">
                     <div>
                         <div className="mb-3 inline-flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-4 py-2 text-xs font-semibold text-primary shadow-sm">
@@ -47,14 +47,14 @@ const Category = () => {
                     </div>
                 </div>
 
-                {/* Loading */}
+                
                 {isLoading && (
                     <div className="flex min-h-40 items-center justify-center">
                         <Loader2 className="size-7 animate-spin text-primary" />
                     </div>
                 )}
 
-                {/* Error */}
+                
                 {isError && !isLoading && (
                     <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-12 text-center">
                         <h3 className="text-base font-bold text-foreground">
@@ -71,7 +71,7 @@ const Category = () => {
                     </div>
                 )}
 
-                {/* Empty */}
+                
                 {!isLoading && !isError && categories.length === 0 && (
                     <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-12 text-center">
                         <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-muted">
@@ -92,7 +92,7 @@ const Category = () => {
                     </div>
                 )}
 
-                {/* Category Grid */}
+                
                 {!isLoading && !isError && categories.length > 0 && (
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4 xl:gap-5">
                         {categories.map((category) => (

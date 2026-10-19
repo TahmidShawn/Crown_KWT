@@ -169,11 +169,6 @@ export default function UpdateCake() {
     const selectedImages = watch("images") || [];
     const selectedTags = watch("tags") || [];
 
-    /*
-     * GET /cakes/:id
-     *
-     * Public single-cake endpoint from your current backend.
-     */
     const {
         data: cakeResponse,
         isLoading: isLoadingCake,
@@ -184,9 +179,6 @@ export default function UpdateCake() {
         enabled: Boolean(id),
     });
 
-    /*
-     * GET /categories
-     */
     const { data: categoriesResponse, isLoading: isLoadingCategories } = useGet(
         {
             url: "/categories",
@@ -197,9 +189,6 @@ export default function UpdateCake() {
     const cake = cakeResponse?.data;
     const categories = categoriesResponse?.data || [];
 
-    /*
-     * PUT /admin/cakes/:id
-     */
     const { mutate: updateCake, isPending: isUpdating } = usePut({
         url: `/admin/cakes/${id}`,
         config: {
@@ -209,9 +198,6 @@ export default function UpdateCake() {
         },
     });
 
-    /*
-     * Populate form from API response
-     */
     useEffect(() => {
         if (!cake) {
             return;
@@ -282,9 +268,6 @@ export default function UpdateCake() {
         setImagePreviews([]);
     }, [cake, reset]);
 
-    /*
-     * Generate previews for newly selected files.
-     */
     useEffect(() => {
         if (!selectedImages.length) {
             setImagePreviews([]);
@@ -340,10 +323,6 @@ export default function UpdateCake() {
 
         const currentFiles = selectedImages;
 
-        /*
-         * Existing images + newly selected images
-         * must never exceed 5.
-         */
         const remainingSlots = Math.max(0, 5 - existingImages.length);
 
         const nextImages = [...currentFiles, ...validFiles].slice(
@@ -429,16 +408,10 @@ export default function UpdateCake() {
 
         formData.append("tags", values.tags.join(","));
 
-        /*
-         * New images.
-         */
         values.images.forEach((file) => {
             formData.append("images", file);
         });
 
-        /*
-         * Existing images that should remain.
-         */
         formData.append("existingImages", JSON.stringify(existingImages));
 
         updateCake(formData, {
@@ -459,7 +432,7 @@ export default function UpdateCake() {
     };
 
     const onInvalid = (formErrors) => {
-        console.error("Cake form validation errors:", formErrors);
+
     };
 
     if (isLoadingCake || isLoadingCategories) {
@@ -499,7 +472,7 @@ export default function UpdateCake() {
 
     return (
         <div className="mx-auto w-full max-w-7xl space-y-6 pb-10">
-            {/* Header */}
+
             <div className="flex items-center gap-4">
                 <Button
                     asChild
@@ -527,7 +500,7 @@ export default function UpdateCake() {
                 onSubmit={handleSubmit(onSubmit, onInvalid)}
                 className="space-y-6"
             >
-                {/* Cake Information */}
+
                 <div className={`${sectionClasses} overflow-hidden`}>
                     <div className="border-b p-6">
                         <div className="flex items-center gap-3">
@@ -549,7 +522,7 @@ export default function UpdateCake() {
                     </div>
 
                     <div className="grid gap-6 p-6 lg:grid-cols-2">
-                        {/* English Name */}
+
                         <div className="space-y-2">
                             <Label htmlFor="nameEn">English Cake Name</Label>
 
@@ -567,7 +540,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Arabic Name */}
                         <div className="space-y-2">
                             <Label htmlFor="nameAr">Arabic Cake Name</Label>
 
@@ -586,7 +558,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* English Description */}
                         <div className="space-y-2">
                             <Label htmlFor="descriptionEn">
                                 English Description
@@ -606,7 +577,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Arabic Description */}
                         <div className="space-y-2">
                             <Label htmlFor="descriptionAr">
                                 Arabic Description
@@ -627,7 +597,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Category */}
                         <div className="space-y-2">
                             <Label>Category</Label>
 
@@ -677,7 +646,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Flavor */}
                         <div className="space-y-2">
                             <Label>Flavor</Label>
 
@@ -726,7 +694,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Weight Size */}
                         <div className="space-y-2">
                             <Label>Weight / Size</Label>
 
@@ -766,7 +733,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Price */}
                         <div className="space-y-2">
                             <Label htmlFor="price">Price (KWD)</Label>
 
@@ -786,7 +752,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Discount */}
                         <div className="space-y-2">
                             <Label htmlFor="discountPercentage">
                                 Discount Percentage
@@ -808,7 +773,6 @@ export default function UpdateCake() {
                             )}
                         </div>
 
-                        {/* Stock */}
                         <div className="space-y-2">
                             <Label htmlFor="stock">Stock</Label>
 
@@ -830,7 +794,6 @@ export default function UpdateCake() {
                     </div>
                 </div>
 
-                {/* Images */}
                 <div className={`${sectionClasses} overflow-hidden`}>
                     <div className="border-b p-6">
                         <div className="flex items-center gap-3">
@@ -860,7 +823,7 @@ export default function UpdateCake() {
                         />
 
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                            {/* Existing Images */}
+
                             {existingImages.map((image, index) => (
                                 <div
                                     key={image.id || `existing-${index}`}
@@ -890,7 +853,6 @@ export default function UpdateCake() {
                                 </div>
                             ))}
 
-                            {/* New Images */}
                             {imagePreviews.map((preview, index) => (
                                 <div
                                     key={preview.url}
@@ -916,7 +878,6 @@ export default function UpdateCake() {
                                 </div>
                             ))}
 
-                            {/* Upload */}
                             {totalImages < 5 && (
                                 <button
                                     type="button"
@@ -958,7 +919,6 @@ export default function UpdateCake() {
                     </div>
                 </div>
 
-                {/* SEO Tags */}
                 <div className={`${sectionClasses} overflow-hidden`}>
                     <div className="border-b p-6">
                         <div className="flex items-center gap-3">
@@ -1010,7 +970,6 @@ export default function UpdateCake() {
                     </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <Button
                         asChild

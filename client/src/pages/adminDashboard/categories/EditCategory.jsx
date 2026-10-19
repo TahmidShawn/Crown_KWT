@@ -71,7 +71,6 @@ export default function EditCategory() {
     const image = watch("image");
     const isActive = watch("isActive");
 
-    // GET /categories/:id
     const {
         data: categoryResponse,
         isLoading: isLoadingCategory,
@@ -84,7 +83,6 @@ export default function EditCategory() {
 
     const category = categoryResponse?.data;
 
-    // PUT /admin/categories/:id
     const {
         mutate: updateCategory,
         isPending: isUpdating,
@@ -97,7 +95,6 @@ export default function EditCategory() {
         },
     });
 
-    // Populate form
     useEffect(() => {
         if (!category) {
             return;
@@ -114,7 +111,6 @@ export default function EditCategory() {
         setIsNewImage(false);
     }, [category, reset]);
 
-    // New image preview
     useEffect(() => {
         if (!(image instanceof File)) {
             return;
@@ -158,8 +154,6 @@ export default function EditCategory() {
     };
 
     const onSubmit = (values) => {
-        console.log("Edit category submitted:", values);
-        console.log("Category ID:", id);
 
         const formData = new FormData();
 
@@ -171,11 +165,8 @@ export default function EditCategory() {
             formData.append("image", values.image);
         }
 
-        console.log("Sending category update...");
-
         updateCategory(formData, {
             onSuccess: (response) => {
-                console.log("Category update successful:", response);
 
                 toast.success(
                     response?.message || "Category updated successfully",
@@ -185,7 +176,6 @@ export default function EditCategory() {
             },
 
             onError: (error) => {
-                console.error("Category update failed:", error);
 
                 toast.error(
                     error?.response?.data?.message ||
@@ -197,7 +187,7 @@ export default function EditCategory() {
     };
 
     const onInvalid = (formErrors) => {
-        console.error("Category form validation errors:", formErrors);
+
     };
 
     if (isLoadingCategory) {
@@ -237,7 +227,7 @@ export default function EditCategory() {
 
     return (
         <div className="mx-auto max-w-5xl space-y-6">
-            {/* Header */}
+
             <div className="flex items-center gap-4">
                 <Button
                     asChild
@@ -261,10 +251,9 @@ export default function EditCategory() {
                 </div>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
                 <div className="overflow-hidden rounded-2xl border bg-background">
-                    {/* Form Header */}
+
                     <div className="border-b px-6 py-5">
                         <h3 className="font-semibold">
                             Category Information
@@ -275,9 +264,8 @@ export default function EditCategory() {
                         </p>
                     </div>
 
-                    {/* Form Content */}
                     <div className="grid gap-8 p-6 lg:grid-cols-[1fr_1.15fr]">
-                        {/* Image */}
+
                         <div className="space-y-3">
                             <div>
                                 <Label>Category Image</Label>
@@ -367,9 +355,8 @@ export default function EditCategory() {
                             )}
                         </div>
 
-                        {/* Details */}
                         <div className="flex flex-col space-y-6">
-                            {/* English Name */}
+
                             <div className="space-y-2">
                                 <Label htmlFor="nameEn">
                                     English Category Name
@@ -396,7 +383,6 @@ export default function EditCategory() {
                                 </div>
                             </div>
 
-                            {/* Arabic Name */}
                             <div className="space-y-2">
                                 <Label htmlFor="nameAr">
                                     Arabic Category Name
@@ -424,7 +410,6 @@ export default function EditCategory() {
                                 </div>
                             </div>
 
-                            {/* Status */}
                             <div className="rounded-2xl border bg-muted/20 p-5">
                                 <div className="flex items-center justify-between gap-4">
                                     <div className="space-y-1">
@@ -451,7 +436,6 @@ export default function EditCategory() {
                                 </div>
                             </div>
 
-                            {/* Information */}
                             <div className="rounded-2xl bg-primary/[0.04] p-5">
                                 <p className="text-sm font-semibold">
                                     Updating this category
@@ -477,7 +461,6 @@ export default function EditCategory() {
                         </div>
                     </div>
 
-                    {/* Actions */}
                     <div className="flex flex-col-reverse gap-3 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:justify-end">
                         <Button
                             asChild

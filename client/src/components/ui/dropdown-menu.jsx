@@ -3,13 +3,7 @@ import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 import { cn } from "cn"
 import { ChevronRightIcon, CheckIcon } from "lucide-react"
 
-/*
- * Base UI composes elements through its `render` prop — it has no Radix-style
- * `asChild`. Call sites across the app are still written with `asChild`, so the
- * triggers below translate it: the single child element replaces the default
- * element instead of being nested inside it. Without this a trigger renders a
- * <button> inside a <button>, which is invalid HTML and swallows the click.
- */
+
 
 function DropdownMenu({
   ...props

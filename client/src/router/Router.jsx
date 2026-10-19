@@ -52,13 +52,13 @@ const Router = () => {
             <Route element={<RootLayout />}>
                 <Route index element={<Home />} />
 
-                {/* Category → specific category page (no generic /products browse) */}
+                
                 <Route path="/category/:slug" element={<Products />} />
 
-                {/* Cake details — reached by clicking any cake card */}
+                
                 <Route path="/cake/:slug" element={<ProductDetails />} />
 
-                {/* Search results (category-wise product view) */}
+                
                 <Route path="/search" element={<Products />} />
 
                 <Route
@@ -84,14 +84,14 @@ const Router = () => {
 
                 <Route path="/terms" element={<TermsConditions />} />
 
-                {/* Direct /404 — for programmatic navigate("/404") calls */}
+                
                 <Route path="/404" element={<NotFound />} />
 
-                {/* Unknown public URL — still inside navbar/footer layout */}
+                
                 <Route path="*" element={<NotFound />} />
             </Route>
 
-            {/* Guest-only auth pages — signed-in users are bounced away */}
+            
             <Route
                 path="/auth/register"
                 element={
@@ -117,7 +117,7 @@ const Router = () => {
                 }
             />
 
-            {/* Customer dashboard — users only */}
+            
             <Route element={<RequireAuth roles={["user"]} />}>
                 <Route path="/dashboard" element={<DashboardLayout />}>
                     <Route index element={<Dashboard />} />
@@ -128,12 +128,12 @@ const Router = () => {
 
                     <Route path="settings" element={<Settings />} />
 
-                    {/* Unknown /dashboard/* URL — stays inside the user layout */}
+                    
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Route>
 
-            {/* Admin panel — admins only */}
+            
             <Route element={<RequireAuth roles={["admin"]} />}>
                 <Route path="/admin" element={<AdminDashboardLayout />}>
                     <Route index element={<AdminDashboard />} />
@@ -171,18 +171,18 @@ const Router = () => {
 
                     <Route path="customers" element={<Customers />} />
 
-                    {/* Unknown /admin/* URL — stays inside the admin layout */}
+                    
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Route>
             <Route path="/payment/success" element={<PaymentSuccess />} />
             <Route path="/payment/failed" element={<PaymentFailed />} />
 
-            {/* Absolute fallback — auth pages, payments, anything else */}
+            
             <Route path="*" element={<NotFound />} />
             </Routes>
 
-            {/* Floating WhatsApp support — floats on every page except /admin */}
+            
             <WhatsAppButton />
         </>
     );

@@ -178,7 +178,7 @@ const OrderDetails = () => {
             </div>
 
             <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
-                {/* Tracking */}
+                
                 <Card className="rounded-2xl border bg-background shadow-none">
                     <CardHeader className="px-5 py-5 sm:px-6">
                         <CardTitle className="text-lg">
@@ -223,9 +223,9 @@ const OrderDetails = () => {
                         </div>
                     </CardContent>
                 </Card>
-                {/* Sidebar */}
+                
                 <div className="space-y-6">
-                    {/* Items */}
+                    
                     <Card className="rounded-2xl border bg-background shadow-none">
                         <CardHeader className="px-5 py-5">
                             <CardTitle className="text-lg">
@@ -302,7 +302,7 @@ const OrderDetails = () => {
                         </CardContent>
                     </Card>
 
-                    {/* Summary */}
+                    
                     <Card className="rounded-2xl border bg-background shadow-none">
                         <CardHeader className="px-5 py-5">
                             <CardTitle className="text-lg">
@@ -373,7 +373,7 @@ const OrderDetails = () => {
                         </CardContent>
                     </Card>
 
-                    {/* Address */}
+                    
                     <Card className="rounded-2xl border bg-background shadow-none">
                         <CardHeader className="px-5 py-5">
                             <CardTitle className="text-lg">
@@ -417,7 +417,7 @@ const OrderDetails = () => {
                         </CardContent>
                     </Card>
 
-                    {/* Cancel */}
+                    
                     {canCancel && (
                         <CancelOrderButton
                             orderId={order._id}

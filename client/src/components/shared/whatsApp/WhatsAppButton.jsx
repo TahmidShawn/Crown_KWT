@@ -10,7 +10,6 @@ const WhatsAppButton = () => {
 
     const phone = WHATSAPP_NUMBER;
 
-    // Hidden on /admin routes only — the button always has a number now.
     if (pathname.startsWith("/admin")) return null;
 
     return (
