@@ -185,7 +185,7 @@ export default function Customers() {
         const withOrders = shoppers.filter((c) => c.totalOrders > 0).length;
         const repeat = shoppers.filter((c) => c.totalOrders > 1).length;
         const revenue = customers.reduce(
-            (sum, c) => sum + Number(c.totalSpent ?? 0),
+            (sum, c) => sum + Number(c.paidAmount ?? 0),
             0,
         );
 
@@ -223,7 +223,7 @@ export default function Customers() {
                 sorted.sort((a, b) => b.totalOrders - a.totalOrders);
                 break;
             case "spend-high":
-                sorted.sort((a, b) => b.totalSpent - a.totalSpent);
+                sorted.sort((a, b) => b.paidAmount - a.paidAmount);
                 break;
             case "name-asc":
                 sorted.sort((a, b) =>
@@ -500,7 +500,7 @@ export default function Customers() {
                                         </TableCell>
 
                                         <TableCell className="px-5 py-4 font-medium text-foreground">
-                                            {formatPrice(customer.totalSpent)}
+                                            {formatPrice(customer.paidAmount)}
                                         </TableCell>
 
                                         <TableCell className="px-5 py-4 text-sm text-muted-foreground">

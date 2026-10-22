@@ -53,6 +53,23 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
             $addFields: {
                 totalOrders: { $size: "$orders" },
                 totalSpent: { $sum: "$orders.totalPrice" },
+                paidAmount: {
+                    $sum: {
+                        $map: {
+                            input: {
+                                $filter: {
+                                    input: "$orders",
+                                    as: "order",
+                                    cond: {
+                                        $eq: ["$$order.paymentStatus", "paid"],
+                                    },
+                                },
+                            },
+                            as: "order",
+                            in: "$$order.totalPrice",
+                        },
+                    },
+                },
                 lastOrderAt: { $max: "$orders.createdAt" },
                 deliveredOrders: {
                     $size: {
