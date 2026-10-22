@@ -4,7 +4,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { uploadFile, deleteFile } from "../services/storage.service.js";
 
 export const createCategory = asyncHandler(async (req, res) => {
-    const { nameEn, nameAr, isActive } = req.body;
+    const { nameEn, nameAr, isActive, isPopular } = req.body;
     const file = req.file;
 
     if (!file) {
@@ -35,6 +35,7 @@ export const createCategory = asyncHandler(async (req, res) => {
             imageUrl: url,
             imageFileId: fileId,
             isActive: isActive !== undefined ? isActive : true,
+            isPopular: isPopular !== undefined ? isPopular : false,
         });
     } catch (error) {
         await deleteFile(fileId);
@@ -49,7 +50,54 @@ export const createCategory = asyncHandler(async (req, res) => {
 });
 
 export const getCategories = asyncHandler(async (req, res) => {
-    const categories = await Category.aggregate([
+    const { page = 1, limit, sort = "newest", isPopular } = req.query;
+
+    const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+
+    // Mirrors the cakes controller: a missing or invalid limit returns every
+    // match, while a valid one is capped so a client cannot request the
+    // whole table in a single response.
+    const parsedLimit = parseInt(limit, 10);
+    const limitNum =
+        Number.isFinite(parsedLimit) && parsedLimit > 0
+            ? Math.min(parsedLimit, 100)
+            : null;
+
+    const skip = limitNum ? (pageNum - 1) * limitNum : 0;
+
+    // Popular categories: simple find, no cakeCount aggregation needed.
+    // Admins mark categories as popular via the isPopular toggle.
+    if (isPopular === "true") {
+        const categories = await Category.find({
+            isActive: true,
+            isPopular: true,
+        })
+            .sort({ createdAt: -1 })
+            .skip(limitNum ? skip : 0)
+            .limit(limitNum)
+            .select("-imageFileId -__v");
+
+        return res.status(200).json({
+            success: true,
+            message: "Popular categories fetched successfully",
+            data: categories,
+        });
+    }
+
+    // Sorting
+    let sortOption = {
+        createdAt: -1,
+    };
+
+    if (sort === "newest") {
+        sortOption = { createdAt: -1 };
+    } else if (sort === "oldest") {
+        sortOption = { createdAt: 1 };
+    } else if (sort === "name") {
+        sortOption = { "name.en": 1 };
+    }
+
+    const pipeline = [
         {
             $match: {
                 isActive: true,
@@ -91,16 +139,42 @@ export const getCategories = asyncHandler(async (req, res) => {
             },
         },
         {
-            $sort: {
-                createdAt: -1,
+            $sort: sortOption,
+        },
+    ];
+
+    if (limitNum) {
+        pipeline.push({ $skip: skip }, { $limit: limitNum });
+    }
+
+    const countPipeline = [
+        {
+            $match: {
+                isActive: true,
             },
         },
+        {
+            $count: "total",
+        },
+    ];
+
+    const [categories, countResult] = await Promise.all([
+        Category.aggregate(pipeline),
+        limitNum ? Category.aggregate(countPipeline) : Promise.resolve([]),
     ]);
+
+    const total = limitNum ? (countResult[0]?.total ?? 0) : categories.length;
 
     res.status(200).json({
         success: true,
         message: "Categories fetched successfully",
         data: categories,
+        pagination: {
+            total,
+            page: pageNum,
+            limit: limitNum || total,
+            pages: limitNum ? Math.ceil(total / limitNum) : 1,
+        },
     });
 });
 
@@ -173,7 +247,7 @@ export const getCategory = asyncHandler(async (req, res) => {
 
 export const updateCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { nameEn, nameAr, isActive } = req.body;
+    const { nameEn, nameAr, isActive, isPopular } = req.body;
     const file = req.file;
 
     const category = await Category.findById(id);
@@ -206,6 +280,10 @@ export const updateCategory = asyncHandler(async (req, res) => {
 
     if (isActive !== undefined) {
         updateData.isActive = isActive;
+    }
+
+    if (isPopular !== undefined) {
+        updateData.isPopular = isPopular;
     }
 
     let newFileId = null;

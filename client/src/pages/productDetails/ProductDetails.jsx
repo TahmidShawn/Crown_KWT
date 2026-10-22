@@ -12,15 +12,22 @@ import {
     Tag,
     Users,
 } from "lucide-react";
-import { useParams } from "react-router";
+import { Link, useParams, useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
+import useAuth from "@/hooks/useAuth";
+import { useGetMyCakeReview } from "@/hooks/useReviews";
 
 import ProductGallery from "./ProductGallery";
 import ProductAddOns from "./ProductAddOns";
+import ProductReviews from "./ProductReviews";
+import ReviewFormModal from "./ReviewFormModal";
+import { PageTitle } from "@/components/shared/PageTitle";
+import { normalizeFlavors } from "@/utils/flavor";
 
 const flavorLabels = {
     chocolate: {
@@ -79,9 +86,13 @@ const sizeLabels = {
 const ProductDetails = () => {
     const { language } = useLanguage();
     const { slug } = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
     const [quantity, setQuantity] = useState(1);
-    const [activeTab, setActiveTab] = useState("description");
+    const [activeTab, setActiveTab] = useState("reviews");
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
     const {
         data: cakeResponse,
@@ -94,6 +105,21 @@ const ProductDetails = () => {
     });
 
     const { addToCart, isPending: isAddingToCart } = useAddToCart();
+
+    const {
+        data: myReviewResponse,
+        isLoading: isMyReviewLoading,
+    } = useGetMyCakeReview({
+        slug,
+        enabled: Boolean(slug) && isAuthenticated,
+    });
+
+    const myReview = myReviewResponse?.data || null;
+
+    // The button stays locked until we know the user has not reviewed yet.
+    const hasReviewed = Boolean(myReview);
+    const isReviewStateLoading = isAuthLoading || isMyReviewLoading;
+    const canReview = !hasReviewed && !isReviewStateLoading;
 
     const product = cakeResponse?.data;
     const isArabic = language === "ar";
@@ -130,7 +156,10 @@ const ProductDetails = () => {
         );
     }
 
-    const flavor = flavorLabels[product.flavor]?.[language] ?? product.flavor;
+    const flavor =
+        normalizeFlavors(product.flavor)
+            .map((f) => flavorLabels[f]?.[language] ?? f)
+            .join(", ") || "-";
 
     const size =
         sizeLabels[product.weightSize]?.[language] ?? product.weightSize;
@@ -158,35 +187,84 @@ const ProductDetails = () => {
         addToCart(product._id, quantity);
     };
 
+    const handleWriteReview = () => {
+        if (hasReviewed) {
+            toast.error(
+                isArabic
+                    ? "لقد قيّمت هذه الكعكة بالفعل. يمكنك كتابة مراجعة واحدة فقط لكل كعكة."
+                    : "You have already reviewed this cake. You can leave only one review per cake.",
+            );
+
+            return;
+        }
+
+        if (!isAuthenticated) {
+            toast.error(
+                isArabic
+                    ? "يرجى تسجيل الدخول لكتابة مراجعة"
+                    : "Please log in to write a review",
+            );
+
+            navigate("/auth/login", {
+                replace: true,
+                state: { from: location },
+            });
+
+            return;
+        }
+
+        setIsReviewModalOpen(true);
+    };
+
     const isOutOfStock = product.stock <= 0;
 
     return (
-        <main className="bg-background pb-16 md:pb-0">
+        <>
+            <PageTitle
+                title={
+                    product?.name?.[isArabic ? "ar" : "en"] ||
+                    (isArabic ? "تفاصيل المنتج" : "Product Details")
+                }
+                description={
+                    isArabic
+                        ? "استكشف كعكة لذيذة من Crown Kwt وأدرك خيارات التخصيص المتاحة."
+                        : "Explore a delicious cake from Crown Kwt and discover customization options."
+                }
+            />
+            <main className="bg-background pb-16 md:pb-0">
             
-            <section className="pt-24 md:pt-28">
+            <section className="pt-12">
                 <div className="wrapper">
-                    <div className="flex min-h-12 items-center rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-secondary/40 px-4">
-                        <div className="flex min-w-0 items-center gap-2 text-xs">
-                            <Home className="size-3.5 shrink-0 text-primary" />
+                    <div className="flex min-h-12 flex-wrap items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-secondary/40 px-4 text-xs">
+                        <Home className="size-3.5 shrink-0 text-primary" />
 
-                            <ChevronRight className="size-3 shrink-0 text-muted-foreground rtl:rotate-180" />
+                        <ChevronRight className="size-3 shrink-0 text-muted-foreground rtl:rotate-180" />
 
+                        <span className="shrink-0 text-muted-foreground">
+                            {isArabic ? "الكعكات" : "Cakes"}
+                        </span>
+
+                        <ChevronRight className="size-3 shrink-0 text-muted-foreground rtl:rotate-180" />
+
+                        {product.category?.slug ? (
+                            <Link
+                                to={`/category/${product.category.slug}`}
+                                className="shrink-0 font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
+                                title={product.category?.name?.[language]}
+                            >
+                                {product.category?.name?.[language]}
+                            </Link>
+                        ) : (
                             <span className="shrink-0 text-muted-foreground">
-                                {isArabic ? "الكعكات" : "Cakes"}
+                                {product.category?.name?.[language]}
                             </span>
+                        )}
 
-                            <ChevronRight className="size-3 shrink-0 text-muted-foreground rtl:rotate-180" />
+                        <ChevronRight className="size-3 shrink-0 text-muted-foreground rtl:rotate-180" />
 
-                            <span className="shrink-0 text-muted-foreground">
-                                {product.category.name[language]}
-                            </span>
-
-                            <ChevronRight className="size-3 shrink-0 text-muted-foreground rtl:rotate-180" />
-
-                            <span className="truncate font-semibold text-foreground">
-                                {product.name[language]}
-                            </span>
-                        </div>
+                        <span className="truncate font-semibold text-foreground">
+                            {product.name[language]}
+                        </span>
                     </div>
                 </div>
             </section>
@@ -236,12 +314,20 @@ const ProductDetails = () => {
                                 <span className="h-4 w-px bg-border" />
 
                                 <span
-                                    className={`text-xs font-semibold ${
+                                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
                                         product.stock > 0
-                                            ? "text-primary"
-                                            : "text-destructive"
+                                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                            : "bg-destructive/10 text-destructive"
                                     }`}
                                 >
+                                    <span
+                                        className={`size-1.5 rounded-full ${
+                                            product.stock > 0
+                                                ? "bg-emerald-500"
+                                                : "bg-destructive"
+                                        }`}
+                                    />
+
                                     {product.stock > 0
                                         ? isArabic
                                             ? "متوفر"
@@ -315,7 +401,7 @@ const ProductDetails = () => {
                                         </p>
 
                                         {product.stock > 0 && (
-                                            <p className="mt-1 text-[11px] text-muted-foreground">
+                                            <p className="mt-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                                                 {isArabic
                                                     ? `${product.stock} متوفر`
                                                     : `${product.stock} available`}
@@ -508,66 +594,27 @@ const ProductDetails = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="max-w-3xl">
-                                <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-                                    <div>
-                                        <h2 className="text-xl font-black tracking-tight md:text-2xl">
-                                            {isArabic
-                                                ? "مراجعات العملاء"
-                                                : "Customer reviews"}
-                                        </h2>
-
-                                        <div className="mt-2 flex items-center gap-2">
-                                            <div className="flex items-center gap-1">
-                                                {Array.from({
-                                                    length: 5,
-                                                }).map((_, index) => (
-                                                    <Star
-                                                        key={index}
-                                                        className="size-4 fill-primary text-primary"
-                                                    />
-                                                ))}
-                                            </div>
-
-                                            <span className="text-sm font-bold">
-                                                {Number(
-                                                    product.avgRating,
-                                                ).toFixed(1)}
-                                            </span>
-
-                                            <span className="text-sm text-muted-foreground">
-                                                · {product.numReviews}{" "}
-                                                {isArabic
-                                                    ? "مراجعة"
-                                                    : "reviews"}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        type="button"
-                                        variant="outline-asymmetric"
-                                        size="sm"
-                                    >
-                                        {isArabic
-                                            ? "اكتب مراجعة"
-                                            : "Write a review"}
-                                    </Button>
-                                </div>
-
-                                <div className="mt-8 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card p-6">
-                                    <p className="text-sm text-muted-foreground">
-                                        {isArabic
-                                            ? "ستظهر مراجعات العملاء هنا."
-                                            : "Customer reviews will appear here."}
-                                    </p>
-                                </div>
+                            <div className="max-w-5xl">
+                                <ProductReviews
+                                    slug={slug}
+                                    canReview={canReview}
+                                    hasReviewed={hasReviewed}
+                                    onWriteReview={handleWriteReview}
+                                />
                             </div>
                         )}
                     </div>
                 </div>
             </section>
+
+            <ReviewFormModal
+                open={isReviewModalOpen}
+                onOpenChange={setIsReviewModalOpen}
+                slug={slug}
+                cakeName={product?.name?.[isArabic ? "ar" : "en"]}
+            />
         </main>
+        </>
     );
 };
 

@@ -1,5 +1,5 @@
 import { Edit, ImageOff, Plus, Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -28,10 +28,17 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import useGet from "@/hooks/useGet";
+import { formatFlavorList, normalizeFlavors } from "@/utils/flavor";
 
 export default function Cakes() {
     const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
     const [cakeToDelete, setCakeToDelete] = useState(null);
+
+    const params = {
+        page,
+        limit: 20,
+    };
 
     const {
         data: cakesResponse,
@@ -39,10 +46,12 @@ export default function Cakes() {
         refetch,
     } = useGet({
         url: "/admin/cakes",
-        queryKey: ["admin", "cakes"],
+        params,
+        queryKey: ["admin", "cakes", page],
     });
 
     const cakes = cakesResponse?.data || [];
+    const pagination = cakesResponse?.pagination;
 
     const { mutate: deleteCake, isPending: isDeleting } = useMutation({
         mutationFn: async (cakeId) => {
@@ -66,13 +75,22 @@ export default function Cakes() {
 
         if (!searchValue) return true;
 
+        const flavors = normalizeFlavors(cake.flavor);
+
         return (
             cake.name?.en?.toLowerCase().includes(searchValue) ||
             cake.name?.ar?.toLowerCase().includes(searchValue) ||
             cake.category?.name?.en?.toLowerCase().includes(searchValue) ||
-            cake.flavor?.toLowerCase().includes(searchValue)
+            flavors.some((flavor) =>
+                flavor.toLowerCase().includes(searchValue),
+            )
         );
     });
+
+    // Reset page to 1 when search changes
+    useEffect(() => {
+        setPage(1);
+    }, [search]);
 
     const handleDelete = () => {
         if (!cakeToDelete) return;
@@ -116,7 +134,7 @@ export default function Cakes() {
 
                 
                 <div className="rounded-2xl border bg-background p-5">
-                    <div className="relative max-w-md bg-white">
+                    <div className="relative max-w-md bg-card">
                         <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
                         <Input
@@ -129,7 +147,7 @@ export default function Cakes() {
                 </div>
 
                 
-                <div className="overflow-hidden rounded-2xl border bg-white">
+                <div className="overflow-hidden rounded-2xl border bg-card">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
@@ -242,9 +260,8 @@ export default function Cakes() {
                                                 
                                                 <TableCell className="px-5 py-4">
                                                     <span className="text-sm capitalize">
-                                                        {cake.flavor?.replace(
-                                                            /-/g,
-                                                            " ",
+                                                        {formatFlavorList(
+                                                            cake.flavor,
                                                         ) || "—"}
                                                     </span>
                                                 </TableCell>
@@ -286,7 +303,7 @@ export default function Cakes() {
                                                     <span
                                                         className={
                                                             cake.isActive
-                                                                ? "text-sm font-medium text-green-600"
+                                                                ? "text-sm font-medium text-emerald-400"
                                                                 : "text-sm font-medium text-muted-foreground"
                                                         }
                                                     >
@@ -343,8 +360,40 @@ export default function Cakes() {
 
                 
                 {!isLoading && cakes.length > 0 && (
+                    <div className="mt-10 flex items-center justify-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                                setPage((prev) => Math.max(prev - 1, 1))
+                            }
+                            disabled={page === 1}
+                        >
+                            Previous
+                        </Button>
+                        <span className="text-sm text-muted-foreground">
+                            {page} / {pagination?.pages}
+                        </span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                                setPage((prev) =>
+                                    Math.min(prev + 1, pagination?.pages ?? 1)
+                                )
+                            }
+                            disabled={page >= (pagination?.pages ?? 1)}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                )}
+
+                {!isLoading && cakes.length > 0 && (
                     <p className="text-sm text-muted-foreground">
-                        Showing {filteredCakes.length} of {cakes.length} cakes
+                        Showing {filteredCakes.length} of {
+                            pagination?.total ?? cakes.length
+                        } cakes
                     </p>
                 )}
             </div>

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ImagePlus, Loader2, Upload, X } from "lucide-react";
+import { ArrowLeft, ImagePlus, Loader2, TrendingUp, Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
@@ -41,6 +41,8 @@ const categorySchema = z.object({
         .optional(),
 
     isActive: z.boolean(),
+
+    isPopular: z.boolean(),
 });
 
 export default function EditCategory() {
@@ -65,11 +67,13 @@ export default function EditCategory() {
             nameAr: "",
             image: undefined,
             isActive: true,
+            isPopular: false,
         },
     });
 
     const image = watch("image");
     const isActive = watch("isActive");
+    const isPopular = watch("isPopular");
 
     const {
         data: categoryResponse,
@@ -105,6 +109,7 @@ export default function EditCategory() {
             nameAr: category.name?.ar || "",
             image: undefined,
             isActive: category.isActive ?? true,
+            isPopular: category.isPopular ?? false,
         });
 
         setImagePreview(category.imageUrl || null);
@@ -137,6 +142,13 @@ export default function EditCategory() {
             shouldValidate: true,
             shouldDirty: true,
         });
+
+        // Reset the file input so selecting the same file again triggers onChange.
+        // Without this, re-selecting the same image does not fire a change event
+        // and the upload button appears to stop working.
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const removeImage = () => {
@@ -160,6 +172,7 @@ export default function EditCategory() {
         formData.append("nameEn", values.nameEn.trim());
         formData.append("nameAr", values.nameAr.trim());
         formData.append("isActive", String(values.isActive));
+        formData.append("isPopular", String(values.isPopular));
 
         if (values.image instanceof File) {
             formData.append("image", values.image);
@@ -186,9 +199,7 @@ export default function EditCategory() {
         });
     };
 
-    const onInvalid = (formErrors) => {
-
-    };
+    const onInvalid = () => {};
 
     if (isLoadingCategory) {
         return (
@@ -284,7 +295,7 @@ export default function EditCategory() {
                                 onChange={handleImageChange}
                             />
 
-                            {imagePreview ? (
+                            {imagePreview && (
                                 <div className="relative overflow-hidden rounded-2xl border bg-muted/20">
                                     <img
                                         src={imagePreview}
@@ -317,36 +328,38 @@ export default function EditCategory() {
                                         )}
                                     </div>
                                 </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        fileInputRef.current?.click()
-                                    }
-                                    className="group flex aspect-square w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-muted/20 px-6 text-center transition-all hover:border-primary/40 hover:bg-primary/[0.03]"
-                                >
-                                    <div className="flex size-14 items-center justify-center rounded-2xl bg-background shadow-sm transition-transform group-hover:-translate-y-1">
-                                        <ImagePlus className="size-6 text-primary" />
-                                    </div>
-
-                                    <p className="mt-5 text-sm font-semibold">
-                                        Upload category image
-                                    </p>
-
-                                    <p className="mt-1 max-w-xs text-xs leading-5 text-muted-foreground">
-                                        Choose an image for this category
-                                    </p>
-
-                                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
-                                        <Upload className="size-3.5" />
-                                        Choose image
-                                    </div>
-
-                                    <p className="mt-4 text-[11px] text-muted-foreground">
-                                        JPG, PNG or WEBP · Maximum 5MB
-                                    </p>
-                                </button>
                             )}
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    fileInputRef.current?.click()
+                                }
+                                className="group flex aspect-square w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-muted/20 px-6 text-center transition-all hover:border-primary/40 hover:bg-primary/[0.03]"
+                            >
+                                <div className="flex size-14 items-center justify-center rounded-2xl bg-background shadow-sm transition-transform group-hover:-translate-y-1">
+                                    <ImagePlus className="size-6 text-primary" />
+                                </div>
+
+                                <p className="mt-5 text-sm font-semibold">
+                                    {imagePreview
+                                        ? "Change category image"
+                                        : "Upload category image"}
+                                </p>
+
+                                <p className="mt-1 max-w-xs text-xs leading-5 text-muted-foreground">
+                                    Choose an image for this category
+                                </p>
+
+                                <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
+                                    <Upload className="size-3.5" />
+                                    Choose image
+                                </div>
+
+                                <p className="mt-4 text-[11px] text-muted-foreground">
+                                    JPG, PNG or WEBP · Maximum 5MB
+                                </p>
+                            </button>
 
                             {errors.image && (
                                 <p className="text-sm text-destructive">
@@ -430,6 +443,40 @@ export default function EditCategory() {
                                             setValue("isActive", value, {
                                                 shouldDirty: true,
                                                 shouldValidate: true,
+                                            })
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mb-4 p-4 rounded-lg border border-border bg-muted/50">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+                                            <TrendingUp className="size-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <Label
+                                                htmlFor="isPopular"
+                                                className="cursor-pointer"
+                                            >
+                                                Popular Category
+                                            </Label>
+
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                Feature this category in the
+                                                popular section on the home
+                                                page.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <Switch
+                                        id="isPopular"
+                                        checked={isPopular}
+                                        onCheckedChange={(value) =>
+                                            setValue("isPopular", value, {
+                                                shouldDirty: true,
                                             })
                                         }
                                     />

@@ -816,7 +816,10 @@ const OrderDetails = () => {
                                     </span>
                                     ?{" "}
                                     {statusConfirm === "delivered"
-                                        ? "The delivery date will be recorded. "
+                                        ? order.paymentMethod ===
+                                          "cash_on_delivery"
+                                            ? "The delivery date will be recorded and the payment status will be marked as paid. "
+                                            : "The delivery date will be recorded. "
                                         : ""}
                                     The customer will see the updated status
                                     when tracking their order.

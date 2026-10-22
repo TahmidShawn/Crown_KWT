@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import OrderTimeline from "@/components/shared/orderTimeline/OrderTimeline";
+import { PageTitle } from "@/components/shared/PageTitle";
+import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
 import {
     buildTrackingSteps,
@@ -16,6 +18,8 @@ import {
 } from "@/utils/orderStatus";
 
 const OrderTracking = () => {
+    const { language } = useLanguage();
+    const isArabic = language === "ar";
 
     const [searchParams] = useSearchParams();
     const initialNumber = searchParams.get("orderNumber")?.trim() ?? "";
@@ -52,7 +56,16 @@ const OrderTracking = () => {
     };
 
     return (
-        <div className="min-h-[70vh] px-5 py-12 sm:px-7 lg:px-9 lg:py-16">
+        <>
+            <PageTitle
+                title={isArabic ? "تتبع الطلب" : "Track Order"}
+                description={
+                    isArabic
+                        ? "أدخل رقم طلبك لمعرفة أحدث حالة للتسليم."
+                        : "Enter your order number to see the latest delivery status."
+                }
+            />
+            <div className="min-h-[70vh] px-5 py-12 sm:px-7 lg:px-9 lg:py-16">
             <div className="mx-auto max-w-3xl">
                 <div className="mx-auto max-w-2xl text-center">
                     <p className="mb-3 text-sm font-semibold text-primary">
@@ -188,6 +201,7 @@ const OrderTracking = () => {
 
             </div>
         </div>
+        </>
     );
 };
 

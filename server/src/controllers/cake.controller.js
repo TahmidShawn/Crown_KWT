@@ -61,6 +61,26 @@ const parseTags = (tags) => {
     return [];
 };
 
+const parseFlavors = (flavors) => {
+    if (!flavors) return [];
+
+    if (Array.isArray(flavors)) {
+        return flavors
+            .flatMap((f) => (typeof f === "string" ? f.split(",") : []))
+            .map((f) => f.trim())
+            .filter(Boolean);
+    }
+
+    if (typeof flavors === "string") {
+        return flavors
+            .split(",")
+            .map((f) => f.trim())
+            .filter(Boolean);
+    }
+
+    return [];
+};
+
 /*
  * MongoDB cannot query or sort a Mongoose virtual directly.
  *
@@ -107,6 +127,18 @@ const formatCakePrices = (cake) => {
     return cake;
 };
 
+/*
+ * Legacy cakes may store `flavor` as a single comma separated string.
+ * Aggregation pipelines bypass Mongoose casting, so the raw value can
+ * still be a string here. Normalize it to an array to keep the API
+ * contract consistent for every client.
+ */
+const formatCakeFlavors = (cake) => {
+    cake.flavor = parseFlavors(cake.flavor);
+
+    return cake;
+};
+
 export const createCake = asyncHandler(async (req, res) => {
     const {
         nameEn,
@@ -148,6 +180,7 @@ export const createCake = asyncHandler(async (req, res) => {
     const images = await uploadCakeImages(files);
 
     const parsedTags = parseTags(tags);
+    const parsedFlavors = parseFlavors(flavor);
 
     try {
         const cake = await Cake.create({
@@ -161,7 +194,7 @@ export const createCake = asyncHandler(async (req, res) => {
             },
             images,
             category,
-            flavor,
+            flavor: parsedFlavors,
             weightSize,
             price,
             discountPercentage,
@@ -187,7 +220,7 @@ export const createCake = asyncHandler(async (req, res) => {
 });
 
 export const getCakes = asyncHandler(async (req, res) => {
-    const { category, price, size, sort = "featured", limit, search } =
+    const { category, price, size, sort = "featured", limit, search, page } =
         req.query;
 
     const filter = {
@@ -258,6 +291,11 @@ export const getCakes = asyncHandler(async (req, res) => {
         }
     }
 
+    // Pagination
+    const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+    const limitNum = Math.min(Math.max(parseInt(limit, 10) || 10, 1), 100);
+    const skip = (pageNum - 1) * limitNum;
+
     // Sorting
     let sortOption = {
         createdAt: -1,
@@ -310,21 +348,17 @@ export const getCakes = asyncHandler(async (req, res) => {
         });
     }
 
-    const limitNum = parseInt(limit, 10);
-    const cappedLimit =
-        Number.isFinite(limitNum) && limitNum > 0
-            ? Math.min(limitNum, 100)
-            : null;
-
     pipeline.push({
         $sort: sortOption,
     });
 
-    if (cappedLimit) {
-        pipeline.push({
-            $limit: cappedLimit,
-        });
-    }
+    pipeline.push({
+        $skip: skip,
+    });
+
+    pipeline.push({
+        $limit: limitNum,
+    });
 
     pipeline.push(
         {
@@ -352,14 +386,36 @@ export const getCakes = asyncHandler(async (req, res) => {
         },
     );
 
-    const cakes = await Cake.aggregate(pipeline);
+    const countPipeline = [
+        {
+            $match: filter,
+        },
+        {
+            $count: "total",
+        },
+    ];
 
-    const formattedCakes = cakes.map(formatCakePrices);
+    const [cakes, countResult] = await Promise.all([
+        Cake.aggregate(pipeline),
+        Cake.aggregate(countPipeline),
+    ]);
+
+    const total = countResult[0]?.total ?? 0;
+
+    const formattedCakes = cakes.map((cake) =>
+        formatCakeFlavors(formatCakePrices(cake)),
+    );
 
     res.status(200).json({
         success: true,
         message: "Cakes fetched successfully",
         data: formattedCakes,
+        pagination: {
+            total,
+            page: pageNum,
+            limit: limitNum,
+            pages: Math.ceil(total / limitNum),
+        },
     });
 });
 
@@ -378,7 +434,23 @@ export const getCake = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Cake fetched successfully",
-        data: cake,
+        data: formatCakeFlavors(cake),
+    });
+});
+
+export const getAdminCake = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const cake = await Cake.findById(id).populate("category", "name slug");
+
+    if (!cake) {
+        throw new ErrorHandler("Cake not found", 404);
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Cake fetched successfully",
+        data: formatCakeFlavors(cake),
     });
 });
 
@@ -464,7 +536,7 @@ export const updateCake = asyncHandler(async (req, res) => {
     }
 
     if (flavor !== undefined) {
-        updateData.flavor = flavor;
+        updateData.flavor = parseFlavors(flavor);
     }
 
     if (weightSize !== undefined) {
@@ -715,7 +787,9 @@ export const getAdminCakes = asyncHandler(async (req, res) => {
 
     const total = countResult[0]?.total ?? 0;
 
-    const formattedCakes = cakes.map(formatCakePrices);
+    const formattedCakes = cakes.map((cake) =>
+        formatCakeFlavors(formatCakePrices(cake)),
+    );
 
     res.status(200).json({
         success: true,

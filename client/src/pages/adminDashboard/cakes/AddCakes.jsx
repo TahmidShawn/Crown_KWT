@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -86,7 +87,10 @@ const cakeSchema = z.object({
 
     category: z.string().min(1, "Category is required"),
 
-    flavor: z.string().min(1, "Flavor is required"),
+    flavor: z
+        .array(z.string())
+        .min(1, "Please select at least one cake flavor")
+        .max(5, "You can select up to 5 cake flavors"),
 
     weightSize: z.enum(["small", "medium"]),
 
@@ -116,6 +120,7 @@ const cakeSchema = z.object({
 
 export default function AddCakes() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const [imagePreviews, setImagePreviews] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
@@ -136,7 +141,7 @@ export default function AddCakes() {
             descriptionEn: "",
             descriptionAr: "",
             category: "",
-            flavor: "",
+            flavor: [],
             weightSize: "medium",
             price: "",
             discountPercentage: "0",
@@ -150,6 +155,7 @@ export default function AddCakes() {
     const descriptionEn = watch("descriptionEn");
     const images = watch("images");
     const selectedTags = watch("tags");
+    const selectedFlavors = watch("flavor") || [];
 
     const { data: categoriesResponse, isPending: isCategoriesLoading } = useGet(
         {
@@ -369,6 +375,33 @@ export default function AddCakes() {
         });
     };
 
+    const handleFlavorChange = (flavor) => {
+        const currentFlavors = selectedFlavors || [];
+
+        if (currentFlavors.includes(flavor)) {
+            setValue(
+                "flavor",
+                currentFlavors.filter((item) => item !== flavor),
+                {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                },
+            );
+
+            return;
+        }
+
+        if (currentFlavors.length >= 5) {
+            toast.error("Maximum 5 cake flavors allowed");
+            return;
+        }
+
+        setValue("flavor", [...currentFlavors, flavor], {
+            shouldDirty: true,
+            shouldValidate: true,
+        });
+    };
+
     const handleCreateCake = (formData) => {
         const data = new FormData();
 
@@ -378,7 +411,7 @@ export default function AddCakes() {
         data.append("descriptionAr", formData.descriptionAr.trim());
 
         data.append("category", formData.category);
-        data.append("flavor", formData.flavor);
+        data.append("flavor", formData.flavor.join(","));
         data.append("weightSize", formData.weightSize);
         data.append("price", formData.price);
         data.append("discountPercentage", formData.discountPercentage || "0");
@@ -398,6 +431,19 @@ export default function AddCakes() {
                     description:
                         response?.message || "Cake created successfully.",
                 });
+
+                // The admin list is sorted newest first, so invalidate it to
+                // refetch and surface the new cake at the top of the table.
+                // `refetchType: "all"` also refreshes the cached entry when the
+                // list is not currently mounted.
+                queryClient.invalidateQueries({
+                    queryKey: ["admin", "cakes"],
+                    refetchType: "all",
+                });
+
+                // Public listings are cached under the "cakes" prefix, so
+                // drop them as well to keep the storefront in sync.
+                queryClient.invalidateQueries({ queryKey: ["cakes"] });
 
                 navigate("/admin/cakes");
             },
@@ -724,46 +770,31 @@ export default function AddCakes() {
 
                         <div className="space-y-2">
                             <Label htmlFor="flavor">Flavor</Label>
-
-                            <Controller
-                                name="flavor"
-                                control={control}
-                                render={({ field }) => {
-                                    const selectedFlavor = flavors.find(
-                                        (flavor) =>
-                                            flavor.value === field.value,
+                            <p className="text-xs text-muted-foreground">
+                                Select between 1 and 5 flavors
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {flavors.map((flavor) => {
+                                    const isSelected = selectedFlavors.includes(
+                                        flavor.value,
                                     );
 
                                     return (
-                                        <Select
-                                            value={field.value || undefined}
-                                            onValueChange={field.onChange}
+                                        <button
+                                            key={flavor.value}
+                                            type="button"
+                                            onClick={() =>
+                                                handleFlavorChange(flavor.value)
+                                            }
+                                            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${isSelected
+                                                ? "border-primary bg-primary text-primary-foreground"
+                                                : "border-border bg-background hover:bg-muted"}`}
                                         >
-                                            <SelectTrigger
-                                                id="flavor"
-                                                className={selectClasses}
-                                            >
-                                                <span className="truncate">
-                                                    {selectedFlavor
-                                                        ? selectedFlavor.label
-                                                        : "Select flavor"}
-                                                </span>
-                                            </SelectTrigger>
-
-                                            <SelectContent>
-                                                {flavors.map((flavor) => (
-                                                    <SelectItem
-                                                        key={flavor.value}
-                                                        value={flavor.value}
-                                                    >
-                                                        {flavor.label}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                            {flavor.label}
+                                        </button>
                                     );
-                                }}
-                            />
+                                })}
+                            </div>
 
                             {errors.flavor && (
                                 <p className="text-sm text-destructive">

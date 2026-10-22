@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import {
     Collapsible,
     CollapsibleContent,
@@ -278,6 +279,8 @@ export default function AdminDashboardLayout() {
 
                             <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
                         </Button>
+
+                        <ThemeToggle />
                     </div>
                 </header>
 

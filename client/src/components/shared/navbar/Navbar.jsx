@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useTheme } from "@/components/ui/theme-provider";
 import cwtLogo from "@/assets/cwt-logo.jpg";
 import useAuth from "@/hooks/useAuth";
 import useGet from "@/hooks/useGet";
@@ -48,6 +50,9 @@ const Navbar = () => {
 
     const { language, toggleLanguage, t } = useLanguage();
     const isArabic = language === "ar";
+
+    const { resolvedTheme } = useTheme();
+    const isDark = resolvedTheme === "dark";
 
     const { isAuthenticated, isLoading, user, clearUser } = useAuth();
 
@@ -193,11 +198,13 @@ const Navbar = () => {
                             placeholder={t.nav.search}
                             aria-label={t.nav.search}
                             autoComplete="off"
-                            className={`h-10 rounded-none rounded-tl-xl rounded-br-xl pe-4 text-start shadow-none transition-all duration-300 [direction:inherit] focus-visible:ring-1 ${
+                            className={`h-10 rounded-none rounded-tl-xl rounded-br-xl pe-4 text-start shadow-none transition-all duration-300 [direction:inherit] focus-visible:ring-1 [direction:inherit] focus-visible:ring-1 ${
                                 language === "ar" ? "pe-10 ps-4" : "pe-4 ps-10"
                             } ${
                                 scrolled
-                                    ? "border-transparent bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                                    ? isDark
+                                        ? "bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus-visible:ring-white focus-visible:bg-black/30"
+                                        : "border-transparent bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                                     : "border-border bg-card text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/30"
                             }`}
                         />
@@ -214,7 +221,9 @@ const Navbar = () => {
                         title={isArabic ? "تتبع الطلب" : "Track order"}
                         className={`cursor-pointer ${
                             scrolled
-                                ? "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                                ? isDark
+                                    ? "text-white hover:bg-white/10 hover:text-white border border-white/20"
+                                    : "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                                 : "text-foreground hover:bg-secondary hover:text-foreground"
                         }`}
                     >
@@ -233,7 +242,9 @@ const Navbar = () => {
                             size="icon"
                             className={`cursor-pointer ${
                                 scrolled
-                                    ? "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                                    ? isDark
+                                        ? "text-white hover:bg-white/10 hover:text-white border border-white/20"
+                                        : "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                                     : "text-foreground hover:bg-secondary hover:text-foreground"
                             }`}
                         >
@@ -261,7 +272,9 @@ const Navbar = () => {
                                     size="icon"
                                     className={`hidden cursor-pointer md:inline-flex ${
                                         scrolled
-                                            ? "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                                            ? isDark
+                                                ? "text-white hover:bg-white/10 hover:text-white border border-white/20"
+                                                : "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
                                             : "text-foreground hover:bg-secondary hover:text-foreground"
                                     }`}
                                 >
@@ -331,13 +344,15 @@ const Navbar = () => {
                             </PopoverContent>
                         </Popover>
                     ) : (
-                        <Link to="/auth/login">
+                        <Link to="/auth/login" className="hidden md:block">
                             <Button
                                 type="button"
                                 variant="outline-asymmetric"
                                 className={
                                     scrolled
-                                        ? "border-primary-foreground/25 bg-transparent px-2.5 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:px-3"
+                                        ? isDark
+                                            ? "border border-white/30 bg-black/40 backdrop-blur-md px-2.5 text-white hover:bg-white/20 sm:px-3"
+                                            : "border-primary-foreground/25 bg-transparent px-2.5 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:px-3"
                                         : "bg-card px-2.5 text-foreground sm:px-3"
                                 }
                             >
@@ -357,7 +372,9 @@ const Navbar = () => {
                         onClick={toggleLanguage}
                         className={
                             scrolled
-                                ? "border-primary-foreground/25 bg-transparent px-2.5 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:px-3"
+                                ? isDark
+                                    ? "border border-white/30 bg-black/40 backdrop-blur-md px-2.5 text-white hover:bg-white/20 sm:px-3"
+                                    : "border-primary-foreground/25 bg-transparent px-2.5 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:px-3"
                                 : "bg-card px-2.5 text-foreground sm:px-3"
                         }
                     >
@@ -367,6 +384,8 @@ const Navbar = () => {
                             {t.nav.language}
                         </span>
                     </Button>
+
+                    <ThemeToggle />
                 </div>
             </div>
         </header>

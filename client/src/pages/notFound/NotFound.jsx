@@ -4,6 +4,7 @@ import { ArrowLeft, CakeSlice, Home, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
 import getRoleHome from "@/utils/roleHome";
+import { PageTitle } from "@/components/shared/PageTitle";
 
 const NotFound = () => {
     const navigate = useNavigate();
@@ -14,7 +15,9 @@ const NotFound = () => {
     const missingPath = location.pathname;
 
     return (
-        <main className="flex min-h-[70vh] items-center justify-center bg-background px-4 py-14">
+        <>
+            <PageTitle title="Page Not Found" />
+            <main className="flex min-h-[70vh] items-center justify-center bg-background px-4 py-14">
             <div className="mx-auto w-full max-w-2xl border border-border bg-card p-8 text-center shadow-sm md:p-12">
                 <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-tl-2xl rounded-br-2xl bg-primary/10 text-primary">
                     <CakeSlice className="size-8" />
@@ -67,6 +70,7 @@ const NotFound = () => {
                 </div>
             </div>
         </main>
+        </>
     );
 };
 

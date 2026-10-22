@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
 import useAddToCart from "@/hooks/useAddToCart";
 
-const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
+const HotDeals = ({ eyebrow, title, subtitle, limit = 8 } = {}) => {
     const { language } = useLanguage();
     const isArabic = language === "ar";
 
@@ -16,7 +16,7 @@ const HotDeals = ({ eyebrow, title, subtitle } = {}) => {
         isError,
     } = useGet({
         url: "/cakes",
-        params: { sort: "discount", limit: 8 },
+        params: { sort: "discount", limit },
         queryKey: ["cakes", "hot-deals"],
     });
 

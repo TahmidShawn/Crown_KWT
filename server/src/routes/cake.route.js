@@ -4,6 +4,7 @@ import {
     createCake,
     getCakes,
     getAdminCakes,
+    getAdminCake,
     getCake,
     updateCake,
     deleteCake,
@@ -46,6 +47,7 @@ router
 // Admin cake update/delete
 router
     .route("/admin/cakes/:id")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getAdminCake)
     .put(
         isAuthenticatedUser,
         authorizeRoles("admin"),

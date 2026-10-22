@@ -5,6 +5,7 @@ import { Check, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import useGet from "@/hooks/useGet";
+import { PageTitle } from "@/components/shared/PageTitle";
 
 const PaymentSuccess = () => {
     const navigate = useNavigate();
@@ -28,7 +29,9 @@ const PaymentSuccess = () => {
     const orderNumber = orderResponse?.data?.orderNumber;
 
     return (
-        <main className="wrapper py-10 md:py-14">
+        <>
+            <PageTitle title="Order Confirmed" />
+            <main className="wrapper py-10 md:py-14">
             <div className="mx-auto max-w-2xl border border-border bg-card p-8 text-center md:p-12">
                 <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Check className="size-8" />
@@ -77,6 +80,7 @@ const PaymentSuccess = () => {
                 </div>
             </div>
         </main>
+        </>
     );
 };
 

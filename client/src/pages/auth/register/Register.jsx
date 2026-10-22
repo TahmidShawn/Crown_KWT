@@ -17,6 +17,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/ui/google-icon";
 import { Input } from "@/components/ui/input";
+import { PageTitle } from "@/components/shared/PageTitle";
 import usePost from "@/hooks/usePost";
 import useAuth from "@/hooks/useAuth";
 
@@ -118,7 +119,9 @@ const Register = () => {
     };
 
     return (
-        <main className="min-h-screen bg-background">
+        <>
+            <PageTitle title="Register" />
+            <main className="min-h-screen bg-background">
             <div className="flex min-h-screen">
                 <section className="relative hidden min-h-screen w-1/2 overflow-hidden md:block">
                     <img
@@ -366,6 +369,7 @@ const Register = () => {
                 </section>
             </div>
         </main>
+        </>
     );
 };
 

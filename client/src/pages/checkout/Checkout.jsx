@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
 import {
     Check,
@@ -29,6 +30,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { PageTitle } from "@/components/shared/PageTitle";
 
 import useGet from "@/hooks/useGet";
 import usePost from "@/hooks/usePost";
@@ -95,10 +97,15 @@ const formatKuwaitPhoneForDisplay = (phone = "") => {
 
 const Checkout = () => {
     const { language } = useLanguage();
+    const isArabic = language === "ar";
     const location = useLocation();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const selectedCakeIds = location.state?.cakeIds ?? [];
+    const selectedCakeIds = useMemo(
+        () => location.state?.cakeIds ?? [],
+        [location.state?.cakeIds],
+    );
 
     const [savedAddress, setSavedAddress] = useState(null);
     const [address, setAddress] = useState({
@@ -191,39 +198,62 @@ const Checkout = () => {
             .filter(Boolean);
     }, [cartResponse]);
 
-    const cakesTotal = orderItems.reduce(
-        (total, item) => total + item.discountedPrice * item.quantity,
-        0,
+    const cakesTotal = useMemo(
+        () =>
+            orderItems.reduce(
+                (total, item) => total + item.discountedPrice * item.quantity,
+                0,
+            ),
+        [orderItems],
     );
 
-    const addOnsTotal = orderAddOns.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0,
+    const addOnsTotal = useMemo(
+        () =>
+            orderAddOns.reduce(
+                (total, item) => total + item.price * item.quantity,
+                0,
+            ),
+        [orderAddOns],
     );
 
-    const subtotal = cakesTotal + addOnsTotal;
+    const subtotal = useMemo(() => cakesTotal + addOnsTotal, [
+        cakesTotal,
+        addOnsTotal,
+    ]);
 
-    const cakesCount = orderItems.reduce(
-        (total, item) => total + item.quantity,
-        0,
+    const cakesCount = useMemo(
+        () =>
+            orderItems.reduce((total, item) => total + item.quantity, 0),
+        [orderItems],
     );
 
-    const addOnsCount = orderAddOns.reduce(
-        (total, item) => total + item.quantity,
-        0,
+    const addOnsCount = useMemo(
+        () =>
+            orderAddOns.reduce((total, item) => total + item.quantity, 0),
+        [orderAddOns],
     );
 
-    const itemsCount = cakesCount + addOnsCount;
+    const itemsCount = useMemo(
+        () => cakesCount + addOnsCount,
+        [cakesCount, addOnsCount],
+    );
 
     const deliveryFee = 0;
 
-    const discount = orderItems.reduce(
-        (total, item) =>
-            total + (item.price - item.discountedPrice) * item.quantity,
-        0,
+    const discount = useMemo(
+        () =>
+            orderItems.reduce(
+                (total, item) =>
+                    total + (item.price - item.discountedPrice) * item.quantity,
+                0,
+            ),
+        [orderItems],
     );
 
-    const totalPrice = subtotal + deliveryFee;
+    const totalPrice = useMemo(() => subtotal + deliveryFee, [
+        subtotal,
+        deliveryFee,
+    ]);
 
 
     const MIN_ONLINE_TOTAL = 0.1;
@@ -381,6 +411,10 @@ const Checkout = () => {
                     setPlacedOrder(order);
                     setOrderPlaced(true);
 
+                    // Clear the client-side cart cache so the navbar badge
+                    // updates immediately after the order is placed.
+                    queryClient.invalidateQueries({ queryKey: ["cart"] });
+
                     toast.success(
                         response?.message || "Order placed successfully.",
                     );
@@ -534,7 +568,16 @@ const Checkout = () => {
     const isProcessingOrder = isCreatingOrder || isCreatingPayment;
 
     return (
-        <main className="wrapper py-6 md:py-10">
+        <>
+            <PageTitle
+                title={isArabic ? "إتمام الدفع" : "Checkout"}
+                description={
+                    isArabic
+                        ? "أكمل تفاصيل التوصيل واختر طريقة الدفع لطلبك."
+                        : "Confirm your delivery details and choose your payment method."
+                }
+            />
+            <main className="wrapper py-6 md:py-10">
             <div className="mb-8">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <span>Cart</span>
@@ -933,6 +976,7 @@ const Checkout = () => {
                 hasSavedAddress={Boolean(savedAddress)}
             />
         </main>
+        </>
     );
 };
 

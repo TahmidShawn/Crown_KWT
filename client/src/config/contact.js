@@ -1,5 +1,5 @@
-const FALLBACK_WHATSAPP_NUMBER = "96522222222";
-const FALLBACK_CONTACT_EMAIL = "hello@crownkwt.com";
+const FALLBACK_WHATSAPP_NUMBER = "96560605828";
+const FALLBACK_CONTACT_EMAIL = "info@crownkwt.com";
 
 const rawWhatsApp = import.meta.env.VITE_WHATSAPP_NUMBER || "";
 const whatsAppDigits = String(rawWhatsApp).replace(/\D/g, "");

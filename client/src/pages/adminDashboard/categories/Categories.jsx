@@ -115,7 +115,7 @@ export default function Categories() {
 
                 
                 <div className="rounded-2xl border bg-background p-5">
-                    <div className="relative max-w-md bg-white">
+                    <div className="relative max-w-md bg-card">
                         <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 
                         <Input
@@ -128,7 +128,7 @@ export default function Categories() {
                 </div>
 
                 
-                <div className="overflow-hidden rounded-2xl border bg-white">
+                <div className="overflow-hidden rounded-2xl border bg-card">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
@@ -153,6 +153,10 @@ export default function Categories() {
                                         Status
                                     </TableHead>
 
+                                    <TableHead className="h-12 px-5">
+                                        Popular
+                                    </TableHead>
+
                                     <TableHead className="h-12 px-5 text-right">
                                         Actions
                                     </TableHead>
@@ -163,7 +167,7 @@ export default function Categories() {
                                 {isLoading ? (
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="h-32 text-center text-sm text-muted-foreground"
                                         >
                                             Loading categories...
@@ -172,7 +176,7 @@ export default function Categories() {
                                 ) : filteredCategories.length === 0 ? (
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="h-32 text-center text-sm text-muted-foreground"
                                         >
                                             {search
@@ -236,13 +240,27 @@ export default function Categories() {
                                                 <span
                                                     className={
                                                         category.isActive
-                                                            ? "text-sm font-medium text-green-600"
+                                                            ? "text-sm font-medium text-emerald-400"
                                                             : "text-sm font-medium text-muted-foreground"
                                                     }
                                                 >
                                                     {category.isActive
                                                         ? "Active"
                                                         : "Inactive"}
+                                                </span>
+                                            </TableCell>
+
+                                            <TableCell className="px-5 py-4">
+                                                <span
+                                                    className={
+                                                        category.isPopular
+                                                            ? "text-sm font-medium text-emerald-400"
+                                                            : "text-sm font-medium text-muted-foreground"
+                                                    }
+                                                >
+                                                    {category.isPopular
+                                                        ? "Yes"
+                                                        : "No"}
                                                 </span>
                                             </TableCell>
 

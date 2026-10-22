@@ -54,8 +54,14 @@ const cakeSchema = new mongoose.Schema(
             index: true,
         },
         flavor: {
-            type: String,
-            required: [true, "Please select a cake flavor"],
+            type: [String],
+            required: [true, "Please select at least one cake flavor"],
+            validate: {
+                validator: function (flavors) {
+                    return Array.isArray(flavors) && flavors.length >= 1 && flavors.length <= 5;
+                },
+                message: "Please select between 1 and 5 cake flavors",
+            },
             enum: [
                 "chocolate",
                 "vanilla",

@@ -1,28 +1,69 @@
-import { LayoutGrid, Loader2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChevronDown, LayoutGrid, Loader2 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/context/LanguageContext";
-import useGet from "@/hooks/useGet";
+import useGetAll from "@/hooks/useGetAll";
 import { Link } from "react-router";
+
+const VISIBLE_CATEGORIES_COUNT = 8;
 
 const Category = () => {
     const { language } = useLanguage();
+    const [showAll, setShowAll] = useState(false);
 
     const {
-        data: response,
+        data: categoriesQuery,
         isLoading,
         isError,
-    } = useGet({
+        hasNextPage,
+        isFetchingNextPage,
+        fetchNextPage,
+    } = useGetAll({
         url: "/categories",
-        queryKey: ["categories"],
+        params: { limit: VISIBLE_CATEGORIES_COUNT },
+        queryKey: ["categories", "home", { limit: VISIBLE_CATEGORIES_COUNT }],
         retry: false,
     });
 
-    const categories = response?.data || [];
+    const firstPage = categoriesQuery?.pages?.[0];
+    const hasFirstPage = Boolean(firstPage);
+
+    const total = firstPage?.pagination?.total ?? 0;
+    const hasMore = total > VISIBLE_CATEGORIES_COUNT;
+
+    const visibleCategories = useMemo(() => {
+        const pages = categoriesQuery?.pages ?? [];
+
+        if (!showAll) {
+            return pages[0]?.data ?? [];
+        }
+
+        return pages.flatMap((page) => page?.data ?? []);
+    }, [showAll, categoriesQuery]);
+
+    const handleToggleShowAll = async () => {
+        if (showAll) {
+            setShowAll(false);
+            return;
+        }
+
+        setShowAll(true);
+
+        if (!hasNextPage) {
+            return;
+        }
+
+        let result = await fetchNextPage();
+
+        while (result.hasNextPage && !result.isError) {
+            result = await fetchNextPage();
+        }
+    };
 
     return (
         <section className="relative overflow-hidden bg-secondary/30 py-16 sm:py-20">
             <div className="wrapper">
-                
                 <div className="mb-8 flex items-end justify-between gap-4 md:mb-10">
                     <div>
                         <div className="mb-3 inline-flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-4 py-2 text-xs font-semibold text-primary shadow-sm">
@@ -36,7 +77,7 @@ const Category = () => {
                         <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl xl:text-4xl">
                             {language === "ar"
                                 ? "اختر حسب الفئة"
-                                : "Find your perfect cake"}
+                                : "Find your perfect category"}
                         </h2>
 
                         <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground md:text-base">
@@ -47,15 +88,13 @@ const Category = () => {
                     </div>
                 </div>
 
-                
                 {isLoading && (
                     <div className="flex min-h-40 items-center justify-center">
                         <Loader2 className="size-7 animate-spin text-primary" />
                     </div>
                 )}
 
-                
-                {isError && !isLoading && (
+                {isError && !hasFirstPage && (
                     <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-12 text-center">
                         <h3 className="text-base font-bold text-foreground">
                             {language === "ar"
@@ -71,31 +110,31 @@ const Category = () => {
                     </div>
                 )}
 
-                
-                {!isLoading && !isError && categories.length === 0 && (
-                    <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-12 text-center">
-                        <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-muted">
-                            <LayoutGrid className="size-6 text-muted-foreground" />
+                {!isLoading &&
+                    hasFirstPage &&
+                    visibleCategories.length === 0 && (
+                        <div className="rounded-none rounded-tl-3xl rounded-br-3xl border border-border bg-card px-6 py-12 text-center">
+                            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-muted">
+                                <LayoutGrid className="size-6 text-muted-foreground" />
+                            </div>
+
+                            <h3 className="text-base font-bold text-foreground">
+                                {language === "ar"
+                                    ? "لا توجد فئات بعد"
+                                    : "No categories yet"}
+                            </h3>
+
+                            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+                                {language === "ar"
+                                    ? "تحقق مرة أخرى قريباً."
+                                    : "Check back soon."}
+                            </p>
                         </div>
+                    )}
 
-                        <h3 className="text-base font-bold text-foreground">
-                            {language === "ar"
-                                ? "لا توجد فئات بعد"
-                                : "No categories yet"}
-                        </h3>
-
-                        <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-                            {language === "ar"
-                                ? "تحقق مرة أخرى قريباً."
-                                : "Check back soon."}
-                        </p>
-                    </div>
-                )}
-
-                
-                {!isLoading && !isError && categories.length > 0 && (
+                {!isLoading && hasFirstPage && visibleCategories.length > 0 && (
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4 xl:gap-5">
-                        {categories.map((category) => (
+                        {visibleCategories.map((category) => (
                             <Link
                                 to={`/category/${category.slug}`}
                                 key={category._id}
@@ -105,7 +144,7 @@ const Category = () => {
                                     <img
                                         src={category.imageUrl}
                                         alt={category.name[language]}
-                                        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                                        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-125"
                                         loading="lazy"
                                     />
 
@@ -144,6 +183,52 @@ const Category = () => {
                             </Link>
                         ))}
                     </div>
+                )}
+
+                {!isLoading && hasFirstPage && (hasMore || showAll) && (
+                    <div className="mt-10 flex justify-center">
+                        <Button
+                            type="button"
+                            variant="outline-asymmetric"
+                            size="lg"
+                            onClick={handleToggleShowAll}
+                            disabled={isFetchingNextPage}
+                            className="gap-2 px-7 py-2 text-sm font-semibold"
+                        >
+                            {isFetchingNextPage ? (
+                                <>
+                                    <Loader2 className="size-4 animate-spin" />
+
+                                    {language === "ar"
+                                        ? "جارٍ التحميل"
+                                        : "Loading"}
+                                </>
+                            ) : (
+                                <>
+                                    {showAll
+                                        ? language === "ar"
+                                            ? "عرض أقل"
+                                            : "Show less"
+                                        : language === "ar"
+                                          ? "عرض الكل"
+                                          : "View all"}
+                                    <ChevronDown
+                                        className={`size-4 transition-transform duration-300 ${
+                                            showAll ? "rotate-180" : ""
+                                        }`}
+                                    />
+                                </>
+                            )}
+                        </Button>
+                    </div>
+                )}
+
+                {!isLoading && hasFirstPage && showAll && isError && (
+                    <p className="mt-4 text-center text-sm text-destructive">
+                        {language === "ar"
+                            ? "تعذر تحميل بقية الفئات"
+                            : "Unable to load the remaining categories"}
+                    </p>
                 )}
             </div>
         </section>

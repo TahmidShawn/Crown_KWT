@@ -34,6 +34,19 @@ export const webhookLimiter = rateLimit({
     },
 });
 
+// Guard placed directly on review submission — keeps the one-review-per-cake
+// rule meaningful and stops a single account from spamming the endpoint.
+export const reviewLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    limit: 10, // 10 review writes per IP per 10 minutes
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: "Too many review attempts. Please try again later.",
+    },
+});
+
 // Guard placed directly on order creation — a transactional operation that
 // reserves stock and mutates the cart. This stops basket stuffing / DoS and
 // still lets the global limiter and authLimiter cover everything else.

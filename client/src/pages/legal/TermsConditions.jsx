@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { useLanguage } from "@/context/LanguageContext";
+import { PageTitle } from "@/components/shared/PageTitle";
 import { CONTACT_EMAIL } from "@/config/contact";
 
 const sections = [
@@ -97,7 +98,15 @@ const TermsConditions = () => {
     const isArabic = language === "ar";
 
     return (
-        <main className="wrapper py-10 md:py-14">
+        <main className="wrapper pt-4 pb-10 md:pb-14">
+            <PageTitle
+                title={isArabic ? "الشروط والأحكام" : "Terms & Conditions"}
+                description={
+                    isArabic
+                        ? "آخر تحديث: 2026 — باستخدامك متجر Crown Kwt فأنت توافق على الشروط التالية الخاصة بالطلب والدفع والتوصيل."
+                        : "Last updated: 2026 — by shopping with Crown Kwt you agree to the following terms on ordering, payment and delivery."
+                }
+            />
             <div className="mx-auto max-w-3xl">
                 <p className="text-sm font-semibold tracking-widest text-primary uppercase">
                     {isArabic ? "الشروط" : "Terms"}

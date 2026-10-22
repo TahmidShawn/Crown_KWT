@@ -669,6 +669,14 @@ export const updateOrderStatus = asyncHandler(async (req, res) => {
 
             if (status === "delivered") {
                 order.deliveredAt = new Date();
+
+                // For Cash on Delivery (COD) orders, payment is collected
+                // at the time of delivery. Once the admin marks the order as
+                // delivered, the payment has been received and the payment
+                // status should reflect that.
+                if (order.paymentMethod === "cash_on_delivery") {
+                    order.paymentStatus = "paid";
+                }
             }
 
             await order.save({ session });

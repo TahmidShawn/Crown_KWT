@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import useGet from "@/hooks/useGet";
 import usePut from "@/hooks/usePut";
+import { normalizeFlavors } from "@/utils/flavor";
 
 const availableTags = [
     "birthday",
@@ -91,7 +93,10 @@ const cakeSchema = z.object({
 
     category: z.string().min(1, "Please select a category"),
 
-    flavor: z.string().min(1, "Please select a flavor"),
+    flavor: z
+        .array(z.string())
+        .min(1, "Please select at least one cake flavor")
+        .max(5, "You can select up to 5 cake flavors"),
 
     weightSize: z.enum(["small", "medium"], {
         message: "Please select a size",
@@ -135,6 +140,7 @@ const sectionClasses = "rounded-2xl border bg-card";
 export default function UpdateCake() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const fileInputRef = useRef(null);
 
     const [existingImages, setExistingImages] = useState([]);
@@ -156,7 +162,7 @@ export default function UpdateCake() {
             descriptionEn: "",
             descriptionAr: "",
             category: "",
-            flavor: "",
+            flavor: [],
             weightSize: "small",
             price: "",
             discountPercentage: "0",
@@ -168,13 +174,14 @@ export default function UpdateCake() {
 
     const selectedImages = watch("images") || [];
     const selectedTags = watch("tags") || [];
+    const selectedFlavors = watch("flavor") || [];
 
     const {
         data: cakeResponse,
         isLoading: isLoadingCake,
         isError: isCakeError,
     } = useGet({
-        url: `/cakes/${id}`,
+        url: `/admin/cakes/${id}`,
         queryKey: ["cake", id],
         enabled: Boolean(id),
     });
@@ -219,7 +226,7 @@ export default function UpdateCake() {
 
             category: categoryId,
 
-            flavor: cake.flavor || "",
+            flavor: normalizeFlavors(cake.flavor),
 
             weightSize: cake.weightSize || "small",
 
@@ -386,6 +393,31 @@ export default function UpdateCake() {
         });
     };
 
+    const handleFlavorChange = (flavor) => {
+        if (selectedFlavors.includes(flavor)) {
+            setValue(
+                "flavor",
+                selectedFlavors.filter((item) => item !== flavor),
+                {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                },
+            );
+
+            return;
+        }
+
+        if (selectedFlavors.length >= 5) {
+            toast.error("You can select up to 5 flavors");
+            return;
+        }
+
+        setValue("flavor", [...selectedFlavors, flavor], {
+            shouldDirty: true,
+            shouldValidate: true,
+        });
+    };
+
     const onSubmit = (values) => {
         const formData = new FormData();
 
@@ -397,7 +429,7 @@ export default function UpdateCake() {
         formData.append("descriptionAr", values.descriptionAr.trim());
 
         formData.append("category", values.category);
-        formData.append("flavor", values.flavor);
+        formData.append("flavor", values.flavor.join(","));
         formData.append("weightSize", values.weightSize);
 
         formData.append("price", values.price);
@@ -418,6 +450,13 @@ export default function UpdateCake() {
             onSuccess: (response) => {
                 toast.success(response?.message || "Cake updated successfully");
 
+                // Refresh the admin list so the updated cake is shown with
+                // its latest values once we navigate back to it.
+                queryClient.invalidateQueries({
+                    queryKey: ["admin", "cakes"],
+                    refetchType: "all",
+                });
+
                 navigate("/admin/cakes");
             },
 
@@ -431,9 +470,7 @@ export default function UpdateCake() {
         });
     };
 
-    const onInvalid = (formErrors) => {
-
-    };
+    const onInvalid = () => {};
 
     if (isLoadingCake || isLoadingCategories) {
         return (
@@ -648,44 +685,31 @@ export default function UpdateCake() {
 
                         <div className="space-y-2">
                             <Label>Flavor</Label>
-
-                            <Controller
-                                name="flavor"
-                                control={control}
-                                render={({ field }) => {
-                                    const selectedFlavor = flavors.find(
-                                        (flavor) =>
-                                            flavor.value === field.value,
+                            <p className="text-xs text-muted-foreground">
+                                Select between 1 and 5 flavors
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {flavors.map((flavor) => {
+                                    const isSelected = selectedFlavors.includes(
+                                        flavor.value,
                                     );
 
                                     return (
-                                        <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
+                                        <button
+                                            key={flavor.value}
+                                            type="button"
+                                            onClick={() =>
+                                                handleFlavorChange(flavor.value)
+                                            }
+                                            className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${isSelected
+                                                ? "border-primary bg-primary text-primary-foreground"
+                                                : "bg-background hover:bg-muted"}`}
                                         >
-                                            <SelectTrigger
-                                                className={selectClasses}
-                                            >
-                                                <span className="truncate">
-                                                    {selectedFlavor?.label ||
-                                                        "Select flavor"}
-                                                </span>
-                                            </SelectTrigger>
-
-                                            <SelectContent>
-                                                {flavors.map((flavor) => (
-                                                    <SelectItem
-                                                        key={flavor.value}
-                                                        value={flavor.value}
-                                                    >
-                                                        {flavor.label}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                            {flavor.label}
+                                        </button>
                                     );
-                                }}
-                            />
+                                })}
+                            </div>
 
                             {errors.flavor && (
                                 <p className="text-sm text-destructive">

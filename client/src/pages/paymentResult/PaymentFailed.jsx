@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import usePost from "@/hooks/usePost";
+import { PageTitle } from "@/components/shared/PageTitle";
 
 const PaymentFailed = () => {
     const navigate = useNavigate();
@@ -44,7 +45,9 @@ const PaymentFailed = () => {
     };
 
     return (
-        <main className="wrapper py-10 md:py-14">
+        <>
+            <PageTitle title="Payment Failed" />
+            <main className="wrapper py-10 md:py-14">
             <div className="mx-auto max-w-2xl border border-border bg-card p-8 text-center md:p-12">
                 <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-full bg-destructive/10 text-destructive">
                     <X className="size-8" />
@@ -90,6 +93,7 @@ const PaymentFailed = () => {
                 </div>
             </div>
         </main>
+        </>
     );
 };
 

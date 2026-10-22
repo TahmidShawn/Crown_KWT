@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageTitle } from "@/components/shared/PageTitle";
 import usePost from "@/hooks/usePost";
 import useAuth from "@/hooks/useAuth";
 
@@ -128,7 +129,9 @@ const VerifyEmail = () => {
     };
 
     return (
-        <main className="min-h-screen bg-background">
+        <>
+            <PageTitle title="Verify Email" />
+            <main className="min-h-screen bg-background">
             <div className="flex min-h-screen items-center justify-center px-5 py-12">
                 <section className="w-full max-w-md">
 
@@ -270,6 +273,7 @@ const VerifyEmail = () => {
                 </section>
             </div>
         </main>
+        </>
     );
 };
 

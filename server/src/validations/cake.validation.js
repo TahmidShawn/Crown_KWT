@@ -47,6 +47,52 @@ const percentageString = z
     )
     .transform(Number);
 
+const FLAVOR_VALUES = [
+    "chocolate",
+    "vanilla",
+    "red-velvet",
+    "strawberry",
+    "carrot",
+    "butterscotch",
+    "black-forest",
+    "lemon",
+    "mango",
+    "pistachio",
+];
+
+const parseFlavorCsv = (value) =>
+    value
+        .split(",")
+        .map((flavor) => flavor.trim())
+        .filter(Boolean);
+
+// The client sends flavor as a comma-joined string via FormData
+// (e.g. "chocolate,vanilla"), so validate it as a CSV of 1-5 flavors
+// and transform it into an array for downstream consumers.
+const flavorCsv = z
+    .string({ error: "Flavor is required" })
+    .trim()
+    .refine(
+        (value) => {
+            const items = parseFlavorCsv(value);
+
+            return items.length >= 1 && items.length <= 5;
+        },
+        {
+            message: "Please select between 1 and 5 cake flavors",
+        },
+    )
+    .refine(
+        (value) =>
+            parseFlavorCsv(value).every((flavor) =>
+                FLAVOR_VALUES.includes(flavor),
+            ),
+        {
+            message: "Please select a valid cake flavor",
+        },
+    )
+    .transform((value) => parseFlavorCsv(value));
+
 export const createCakeSchema = z.object({
     nameEn: z
         .string({ error: "English name is required" })
@@ -77,23 +123,7 @@ export const createCakeSchema = z.object({
         .trim()
         .min(1, "Category is required"),
 
-    flavor: z.enum(
-        [
-            "chocolate",
-            "vanilla",
-            "red-velvet",
-            "strawberry",
-            "carrot",
-            "butterscotch",
-            "black-forest",
-            "lemon",
-            "mango",
-            "pistachio",
-        ],
-        {
-            error: "Please select a valid cake flavor",
-        },
-    ),
+    flavor: flavorCsv,
 
     weightSize: z.enum(["small", "medium"], {
         error: "Size must be either small or medium",
@@ -155,20 +185,7 @@ export const updateCakeSchema = z.object({
 
     category: z.string().trim().min(1, "Category cannot be empty").optional(),
 
-    flavor: z
-        .enum([
-            "chocolate",
-            "vanilla",
-            "red-velvet",
-            "strawberry",
-            "carrot",
-            "butterscotch",
-            "black-forest",
-            "lemon",
-            "mango",
-            "pistachio",
-        ])
-        .optional(),
+    flavor: flavorCsv.optional(),
 
     weightSize: z.enum(["small", "medium"]).optional(),
 

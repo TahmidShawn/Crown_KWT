@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ImagePlus, Languages, Loader2, X } from "lucide-react";
+import { ArrowLeft, ImagePlus, Languages, Loader2, TrendingUp, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
@@ -37,6 +37,8 @@ const categorySchema = z.object({
         ),
 
     isActive: z.boolean(),
+
+    isPopular: z.boolean(),
 });
 
 const formatFileSize = (bytes) => {
@@ -71,12 +73,14 @@ export default function AddCategory() {
             nameAr: "",
             image: undefined,
             isActive: true,
+            isPopular: false,
         },
     });
 
     const nameEn = watch("nameEn");
     const image = watch("image");
     const isActive = watch("isActive");
+    const isPopular = watch("isPopular");
 
     const {
         translatedValue,
@@ -178,6 +182,7 @@ export default function AddCategory() {
         data.append("nameAr", formData.nameAr.trim());
         data.append("image", formData.image);
         data.append("isActive", String(formData.isActive));
+        data.append("isPopular", String(formData.isPopular));
 
         createCategory(data, {
             onSuccess: (response) => {
@@ -387,6 +392,40 @@ export default function AddCategory() {
                                         checked={isActive}
                                         onCheckedChange={(checked) =>
                                             setValue("isActive", checked, {
+                                                shouldDirty: true,
+                                            })
+                                        }
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mb-4 p-4 rounded-lg border border-border bg-muted/50">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+                                            <TrendingUp className="size-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <Label
+                                                htmlFor="isPopular"
+                                                className="cursor-pointer"
+                                            >
+                                                Popular Category
+                                            </Label>
+
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                Feature this category in the
+                                                popular section on the home
+                                                page.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <Switch
+                                        id="isPopular"
+                                        checked={isPopular}
+                                        onCheckedChange={(value) =>
+                                            setValue("isPopular", value, {
                                                 shouldDirty: true,
                                             })
                                         }

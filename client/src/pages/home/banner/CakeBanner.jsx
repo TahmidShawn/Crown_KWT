@@ -10,17 +10,17 @@ const cakes = [
     {
         image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1200&auto=format&fit=crop&q=80",
         rating: "4.9",
-        reviews: "800+ reviews",
+        reviews: "80+ reviews",
     },
     {
         image: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=1200&auto=format&fit=crop&q=80",
         rating: "4.8",
-        reviews: "620+ reviews",
+        reviews: "62+ reviews",
     },
     {
         image: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=1200&auto=format&fit=crop&q=80",
         rating: "4.9",
-        reviews: "910+ reviews",
+        reviews: "91+ reviews",
     },
     {
         image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1200&auto=format&fit=crop&q=80",
@@ -30,24 +30,23 @@ const cakes = [
     {
         image: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=1200&auto=format&fit=crop&q=80",
         rating: "4.8",
-        reviews: "680+ reviews",
+        reviews: "68+ reviews",
     },
     {
         image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=1200&auto=format&fit=crop&q=80",
         rating: "4.9",
-        reviews: "850+ reviews",
+        reviews: "85+ reviews",
     },
     {
         image: "https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=1200&auto=format&fit=crop&q=80",
         rating: "5.0",
-        reviews: "470+ reviews",
+        reviews: "47+ reviews",
     },
 ];
 
 const CakeBanner = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const { t } = useLanguage();
-
 
     const { data: categoriesResponse } = useGet({
         url: "/categories",
@@ -71,17 +70,14 @@ const CakeBanner = () => {
     const activeCake = cakes[activeIndex];
 
     return (
-        <section className="relative overflow-hidden bg-background pb-14 pt-24">
-            <div className="wrapper flex flex-col items-center gap-10 md:flex-row md:gap-12 lg:gap-16">
-                
-                <div className="relative z-10 w-full max-w-xl md:w-[46%]">
-                    
+        <section className="relative overflow-hidden bg-background pb-0 md:pb-14 pt-4 md:pt-10">
+            <div className="wrapper max-w-none px-0 md:max-w-7xl md:px-4 flex flex-col items-center gap-10 md:flex-row md:gap-12 lg:gap-16">
+                <div className="hidden md:inline-block relative z-10 w-full max-w-xl md:w-[46%]">
                     <div className="mb-4 inline-flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-4 py-2 text-xs font-semibold text-primary ">
                         <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                         {t.banner.eyebrow}
                     </div>
 
-                    
                     <h1 className="text-[2.15rem] leading-[1.06] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-[3.45rem]">
                         {t.banner.title}
 
@@ -97,7 +93,6 @@ const CakeBanner = () => {
                         </span>
                     </h1>
 
-                    
                     <p className="mt-5 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base md:mt-6 md:text-lg md:leading-8">
                         {t.banner.descriptionStart}{" "}
                         <strong className="font-semibold text-foreground">
@@ -110,7 +105,6 @@ const CakeBanner = () => {
                         {t.banner.descriptionEnd}
                     </p>
 
-                    
                     <div className="mt-6 flex flex-wrap gap-3 sm:mt-7">
                         <Button
                             asChild
@@ -118,9 +112,7 @@ const CakeBanner = () => {
                             size="lg"
                             className="px-7 shadow-lg shadow-primary/20"
                         >
-                            <Link to={firstCategoryPath}>
-                                {t.banner.order}
-                            </Link>
+                            <Link to={firstCategoryPath}>{t.banner.order}</Link>
                         </Button>
 
                         <Button
@@ -129,13 +121,10 @@ const CakeBanner = () => {
                             size="lg"
                             className="bg-card px-7 text-foreground"
                         >
-                            <Link to={firstCategoryPath}>
-                                {t.banner.menu}
-                            </Link>
+                            <Link to={firstCategoryPath}>{t.banner.menu}</Link>
                         </Button>
                     </div>
 
-                    
                     <div className="mt-8 flex items-center gap-5 text-xs text-muted-foreground sm:gap-7 sm:text-sm">
                         <div>
                             <p className="text-xl font-semibold text-foreground sm:text-2xl">
@@ -169,10 +158,8 @@ const CakeBanner = () => {
                     </div>
                 </div>
 
-                
-                <div className="relative w-full max-w-lg md:w-[54%] md:max-w-none">
-                    
-                    <div className="relative aspect-5/4 w-full overflow-hidden   bg-secondary shadow-xl rounded-tl-[100px] rounded-br-[100px]">
+                <div className="relative w-full md:w-[54%] md:max-w-none">
+                    <div className="relative aspect-5/3 w-full overflow-hidden bg-secondary shadow-xl rounded-tl-none md:aspect-5/4 md:rounded-tl-[100px] rounded-br-none md:rounded-br-[100px]">
                         {cakes.map((cake, index) => (
                             <img
                                 key={cake.image}
@@ -188,8 +175,41 @@ const CakeBanner = () => {
 
                         <div className="absolute inset-0 bg-linear-to-t from-foreground/20 via-transparent to-transparent" />
 
-                        
-                        <div className="absolute inset-e-3 top-5 z-20 flex items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-3.5 py-2.5 shadow-lg sm:inset-e-5 sm:top-7">
+                        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-4 sm:px-6 text-center md:hidden">
+                            <h2 className="text-[1.5rem] font-bold leading-[1.2] tracking-tight text-white [text-shadow:0_2px_8px_rgb(0_0_0/0.8)] sm:text-[1.7rem]">
+                                {t.banner.title}{" "}
+                                <span className="text-primary">
+                                    {t.banner.highlight}
+                                </span>{" "}
+                                <span className="relative inline-block">
+                                    {t.banner.ending}
+
+                                    <span className="absolute -bottom-1 inset-s-0 h-1 w-full rounded-full bg-primary/40" />
+                                </span>
+                            </h2>
+
+                            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                                <Button
+                                    asChild
+                                    variant="asymmetric"
+                                    size="lg"
+                                    className="px-6 py-3 shadow-lg shadow-primary/25"
+                                >
+                                    <Link to={firstCategoryPath}>{t.banner.order}</Link>
+                                </Button>
+
+                                <Button
+                                    asChild
+                                    variant="outline-asymmetric"
+                                    size="lg"
+                                    className="bg-card px-6 py-3 text-foreground"
+                                >
+                                    <Link to={firstCategoryPath}>{t.banner.menu}</Link>
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="absolute inset-e-3 top-5 z-20 hidden items-center gap-2 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-3.5 py-2.5 shadow-lg sm:inset-e-5 sm:top-7 md:flex">
                             <span className="text-sm tracking-wide text-primary">
                                 ★★★★★
                             </span>
@@ -200,8 +220,7 @@ const CakeBanner = () => {
                         </div>
                     </div>
 
-                    
-                    <div className="absolute -bottom-4 inset-s-3 z-20 flex items-center gap-2.5 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-3 py-2.5 shadow-lg sm:bottom-5 sm:inset-s-5 sm:px-4 sm:py-3 md:-inset-s-6">
+                    <div className="absolute -bottom-4 inset-s-3 z-20 hidden items-center gap-2.5 rounded-none rounded-tl-2xl rounded-br-2xl border border-border bg-card px-3 py-2.5 shadow-lg sm:bottom-5 sm:inset-s-5 sm:px-4 sm:py-3 md:-inset-s-6 md:flex">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary">
                             <Cake className="h-4 w-4 text-primary" />
                         </div>

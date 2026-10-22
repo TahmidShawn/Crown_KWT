@@ -21,6 +21,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PageTitle } from "@/components/shared/PageTitle";
 import { useLanguage } from "@/context/LanguageContext";
 import useGet from "@/hooks/useGet";
 import usePost from "@/hooks/usePost";
@@ -294,8 +295,17 @@ const Cart = () => {
     }
 
     return (
-        <main className="bg-background pb-16 md:pb-0">
-            <section className="pt-24 md:pt-28">
+        <>
+            <PageTitle
+                title={isArabic ? "سلتك" : "Your cart"}
+                description={
+                    isArabic
+                        ? "راجع عناصر سلة التسوق الخاصة بك قبل إتمام الطلب."
+                        : "Review your cart items before placing your order."
+                }
+            />
+            <main className="bg-background pb-16 md:pb-0">
+            <section className="pt-16">
                 <div className="wrapper">
                     <div className="flex flex-col gap-4">
                         <div className="flex items-end justify-between gap-4">
@@ -800,6 +810,7 @@ const Cart = () => {
                 </div>
             </section>
         </main>
+        </>
     );
 };
 

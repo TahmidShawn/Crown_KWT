@@ -13,14 +13,16 @@ const reviewSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
+        // Optional — kept for a future "verified purchase only" flow.
+        // Today any authenticated user may review any cake.
         order: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Order",
-            required: true,
+            default: null,
         },
         isVerifiedPurchase: {
             type: Boolean,
-            default: true,
+            default: false,
         },
         rating: {
             type: Number,

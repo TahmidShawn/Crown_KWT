@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { FileText, Mail, ShieldCheck } from "lucide-react";
 
 import { useLanguage } from "@/context/LanguageContext";
+import { PageTitle } from "@/components/shared/PageTitle";
 import { CONTACT_EMAIL } from "@/config/contact";
 
 const sections = [
@@ -46,7 +47,15 @@ const Policy = () => {
     const isArabic = language === "ar";
 
     return (
-        <main className="wrapper py-10 md:py-14">
+        <main className="wrapper pt-4 pb-10 md:pb-14">
+            <PageTitle
+                title={isArabic ? "سياسة الخصوصية" : "Privacy Policy"}
+                description={
+                    isArabic
+                        ? "آخر تحديث: 2026 — توضح هذه الصفحة كيف تجمع Crown Kwt بياناتك وتستخدمها وتحميها عند التسوق معنا."
+                        : "Last updated: 2026 — this page explains how Crown Kwt collects, uses and protects your data when you shop with us."
+                }
+            />
             <div className="mx-auto max-w-3xl">
                 <p className="text-sm font-semibold tracking-widest text-primary uppercase">
                     {isArabic ? "الخصوصية" : "Privacy"}

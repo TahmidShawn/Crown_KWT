@@ -15,6 +15,10 @@ export const createCategorySchema = z.object({
         .string()
         .optional()
         .transform((val) => val === "true" || val === "1"),
+    isPopular: z
+        .string()
+        .optional()
+        .transform((val) => val === "true" || val === "1"),
 });
 
 export const updateCategorySchema = z.object({
@@ -31,6 +35,10 @@ export const updateCategorySchema = z.object({
         .max(80, "Arabic name cannot exceed 80 characters")
         .optional(),
     isActive: z
+        .string()
+        .optional()
+        .transform((val) => val === "true" || val === "1"),
+    isPopular: z
         .string()
         .optional()
         .transform((val) => val === "true" || val === "1"),

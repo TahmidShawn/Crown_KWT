@@ -16,6 +16,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import GoogleIcon from "@/components/ui/google-icon";
 import { Input } from "@/components/ui/input";
+import { PageTitle } from "@/components/shared/PageTitle";
 import useAuth from "@/hooks/useAuth";
 import usePost from "@/hooks/usePost";
 import getRoleHome from "@/utils/roleHome";
@@ -105,8 +106,10 @@ const Login = () => {
     };
 
     return (
-        <main className="min-h-screen bg-background">
-            <div className="flex min-h-screen">
+        <>
+            <PageTitle title="Login" />
+            <main className="min-h-screen bg-background">
+                <div className="flex min-h-screen">
 
                 <section className="flex min-h-screen w-full items-center justify-center px-5 py-10 md:w-1/2 md:px-4 lg:px-6">
                     <div className="w-full max-w-lg">
@@ -336,6 +339,7 @@ const Login = () => {
                 </section>
             </div>
         </main>
+        </>
     );
 };
 

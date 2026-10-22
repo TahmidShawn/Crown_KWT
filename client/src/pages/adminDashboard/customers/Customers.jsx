@@ -408,7 +408,7 @@ export default function Customers() {
                     )}
                 </div>
             ) : (
-                <div className="overflow-hidden rounded-2xl border bg-white">
+                <div className="overflow-hidden rounded-2xl border bg-card">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
