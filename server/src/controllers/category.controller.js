@@ -299,6 +299,16 @@ export const updateCategory = asyncHandler(async (req, res) => {
         updateData.imageUrl = url;
         updateData.imageFileId = fileId;
         newFileId = fileId;
+    } else if (image === undefined || image === "") {
+        // User clicked "X" to remove the image - clear the image URL and file ID
+        // or the image field was empty - clear the image URL and file ID
+        updateData.imageUrl = "";
+        updateData.imageFileId = null;
+
+        // Delete the old image file from storage if it exists
+        if (oldFileId) {
+            await deleteFile(oldFileId);
+        }
     }
 
     try {

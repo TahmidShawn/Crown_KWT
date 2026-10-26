@@ -152,6 +152,13 @@ export default function EditAddOn() {
             shouldValidate: true,
             shouldDirty: true,
         });
+
+        // Reset the file input so selecting the same file again triggers onChange.
+        // Without this, re-selecting the same image does not fire a change event
+        // and the upload appears to stop working.
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const removeImage = () => {
@@ -176,8 +183,14 @@ export default function EditAddOn() {
         formData.append("price", values.price.trim());
         formData.append("isActive", String(values.isActive));
 
+        // Always append the image field - if it's a File, upload it;
+        // if it's undefined, the server will know the user wants to remove the image
         if (values.image instanceof File) {
             formData.append("image", values.image);
+        } else {
+            // image is undefined (user clicked X to remove) - append null as string
+            // so the server can detect the intent to remove the image
+            formData.append("image", "");
         }
 
         updateAddOn(formData, {
@@ -295,7 +308,7 @@ export default function EditAddOn() {
                                 onChange={handleImageChange}
                             />
 
-                            {imagePreview ? (
+                            {imagePreview && (
                                 <div className="relative overflow-hidden rounded-2xl border bg-muted/20">
                                     <img
                                         src={imagePreview}
@@ -328,36 +341,38 @@ export default function EditAddOn() {
                                         )}
                                     </div>
                                 </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        fileInputRef.current?.click()
-                                    }
-                                    className="group flex aspect-square w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-muted/20 px-6 text-center transition-all hover:border-primary/40 hover:bg-primary/[0.03]"
-                                >
-                                    <div className="flex size-14 items-center justify-center rounded-2xl bg-background shadow-sm transition-transform group-hover:-translate-y-1">
-                                        <ImagePlus className="size-6 text-primary" />
-                                    </div>
-
-                                    <p className="mt-5 text-sm font-semibold">
-                                        Upload add-on image
-                                    </p>
-
-                                    <p className="mt-1 max-w-xs text-xs leading-5 text-muted-foreground">
-                                        Choose an image for this add-on
-                                    </p>
-
-                                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
-                                        <Upload className="size-3.5" />
-                                        Choose image
-                                    </div>
-
-                                    <p className="mt-4 text-[11px] text-muted-foreground">
-                                        JPG, PNG or WEBP · Maximum 5MB
-                                    </p>
-                                </button>
                             )}
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    fileInputRef.current?.click()
+                                }
+                                className="group flex aspect-square w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-muted/20 px-6 text-center transition-all hover:border-primary/40 hover:bg-primary/[0.03]"
+                            >
+                                <div className="flex size-14 items-center justify-center rounded-2xl bg-background shadow-sm transition-transform group-hover:-translate-y-1">
+                                    <ImagePlus className="size-6 text-primary" />
+                                </div>
+
+                                <p className="mt-5 text-sm font-semibold">
+                                    {imagePreview
+                                        ? "Change add-on image"
+                                        : "Upload add-on image"}
+                                </p>
+
+                                <p className="mt-1 max-w-xs text-xs leading-5 text-muted-foreground">
+                                    Choose an image for this add-on
+                                </p>
+
+                                <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
+                                    <Upload className="size-3.5" />
+                                    Choose image
+                                </div>
+
+                                <p className="mt-4 text-[11px] text-muted-foreground">
+                                    JPG, PNG or WEBP · Maximum 5MB
+                                </p>
+                            </button>
 
                             {errors.image && (
                                 <p className="text-sm text-destructive">
